@@ -9,11 +9,9 @@
         :root {
             --primary: #0f4c75;
             --accent: #1b98e0;
-            --accent2: #e63946;
             --dark: #0a0a0a;
             --dark2: #111827;
             --gray: #6b7280;
-            --light: #f9fafb;
             --white: #ffffff;
             --border: #e5e7eb;
             --gradient: linear-gradient(135deg, #0f4c75 0%, #1b98e0 60%, #38bdf8 100%);
@@ -27,85 +25,97 @@
         /* Nav */
         nav {
             position: fixed; top: 0; width: 100%;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
             z-index: 100;
         }
-        nav .container { display: flex; justify-content: space-between; align-items: center; height: 64px; }
-        .logo { font-size: 1.3rem; font-weight: 800; color: var(--dark); text-decoration: none; letter-spacing: -0.5px; }
+        nav .container { display: flex; justify-content: space-between; align-items: center; height: 60px; }
+        .logo { font-size: 1.2rem; font-weight: 800; color: var(--dark); text-decoration: none; letter-spacing: -0.5px; }
         .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 28px; list-style: none; }
-        .nav-links a { color: var(--gray); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--primary); }
+        .nav-links { display: flex; gap: 24px; list-style: none; }
+        .nav-links a { color: var(--gray); text-decoration: none; font-weight: 500; font-size: 0.88rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--dark); }
 
         /* Hero */
         .hero {
             min-height: 100vh; display: flex; align-items: center;
-            padding-top: 64px;
-            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 70%);
-            position: relative; overflow: hidden;
+            padding-top: 60px;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 60%);
         }
-        .hero::before {
-            content: ''; position: absolute; top: -20%; right: -20%;
-            width: 70%; height: 140%;
-            background: radial-gradient(circle, rgba(27,152,224,0.06) 0%, transparent 70%);
-        }
-        .hero-content { position: relative; z-index: 1; max-width: 750px; }
+        .hero-content { max-width: 680px; }
         .hero-badge {
             display: inline-flex; align-items: center; gap: 8px;
             background: #eff6ff; border: 1px solid #bfdbfe;
-            color: var(--primary); padding: 6px 16px; border-radius: 999px;
-            font-size: 0.8rem; font-weight: 600; margin-bottom: 28px;
-            letter-spacing: 0.5px; text-transform: uppercase;
+            color: var(--primary); padding: 5px 14px; border-radius: 999px;
+            font-size: 0.78rem; font-weight: 600; margin-bottom: 28px;
+            letter-spacing: 0.3px;
         }
         .hero h1 {
-            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            font-size: clamp(2.2rem, 4.5vw, 3.4rem);
             font-weight: 800; line-height: 1.15;
-            color: var(--dark); margin-bottom: 12px; letter-spacing: -1px;
+            color: var(--dark); margin-bottom: 20px; letter-spacing: -1px;
         }
         .hero h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-subtitle { font-size: 1rem; color: var(--gray); margin-bottom: 8px; font-weight: 500; letter-spacing: 0.3px; }
-        .hero-desc { font-size: 1.1rem; color: #374151; margin-bottom: 36px; max-width: 600px; }
-        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
+        .hero-desc { font-size: 1.05rem; color: #4b5563; margin-bottom: 36px; max-width: 560px; line-height: 1.75; }
+        .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
         .btn {
             display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 24px; border-radius: 8px; font-weight: 600;
-            font-size: 0.9rem; text-decoration: none; transition: all 0.2s;
+            padding: 11px 22px; border-radius: 8px; font-weight: 600;
+            font-size: 0.88rem; text-decoration: none; transition: all 0.2s;
         }
-        .btn-primary { background: var(--gradient); color: white; box-shadow: 0 4px 14px rgba(27,152,224,0.35); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(27,152,224,0.45); }
+        .btn-primary { background: var(--gradient); color: white; box-shadow: 0 4px 14px rgba(27,152,224,0.3); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,152,224,0.4); }
         .btn-secondary { background: white; color: var(--dark); border: 1.5px solid var(--border); }
-        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-secondary:hover { border-color: #9ca3af; }
 
-        .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; }
-        .stat { text-align: left; }
-        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--dark); letter-spacing: -1px; }
-        .stat-label { font-size: 0.78rem; color: var(--gray); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid var(--border); }
+        .stat { text-align: left; padding-top: 20px; }
+        .stat-value { font-size: 1.7rem; font-weight: 800; color: var(--dark); letter-spacing: -1px; }
+        .stat-label { font-size: 0.75rem; color: var(--gray); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Status */
+        .status-bar {
+            background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+            padding: 16px 24px; display: flex; align-items: center; gap: 14px;
+        }
+        .status-dot { width: 8px; height: 8px; background: #16a34a; border-radius: 50%; animation: pulse 1.5s infinite; flex-shrink: 0; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+        .status-text { font-size: 0.88rem; color: #15803d; font-weight: 600; }
+        .status-sub { font-size: 0.8rem; color: #166534; margin-top: 2px; }
+
+        /* Demo iframe */
+        .demo-wrap {
+            border-radius: 16px; overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+        .demo-wrap iframe { width: 100%; height: 800px; border: none; display: block; }
+        .demo-note { margin-top: 16px; font-size: 0.82rem; color: var(--gray); text-align: center; }
 
         /* Section */
-        section { padding: 96px 0; }
-        .section-label { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-        .section-title { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: var(--dark); margin-bottom: 16px; letter-spacing: -0.5px; }
-        .section-sub { font-size: 1rem; color: var(--gray); max-width: 560px; }
-        .divider { width: 48px; height: 3px; background: var(--gradient); border-radius: 2px; margin: 24px 0 48px; }
+        section { padding: 88px 0; }
+        .section-label { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+        .section-title { font-size: clamp(1.7rem, 2.8vw, 2.2rem); font-weight: 800; color: var(--dark); margin-bottom: 14px; letter-spacing: -0.5px; }
+        .section-sub { font-size: 0.97rem; color: var(--gray); max-width: 540px; }
+        .divider { width: 40px; height: 3px; background: var(--gradient); border-radius: 2px; margin: 20px 0 44px; }
 
         /* Cards */
-        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
         .card {
-            background: white; border: 1px solid var(--border); border-radius: 16px;
-            padding: 32px; box-shadow: var(--shadow); transition: all 0.25s;
+            background: white; border: 1px solid var(--border); border-radius: 14px;
+            padding: 28px; box-shadow: var(--shadow); transition: all 0.2s;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: #bfdbfe; }
-        .card-icon { font-size: 2rem; margin-bottom: 16px; }
-        .card h3 { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
-        .card p { font-size: 0.9rem; color: var(--gray); line-height: 1.6; }
+        .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .card-icon { font-size: 1.7rem; margin-bottom: 14px; }
+        .card h3 { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+        .card p { font-size: 0.88rem; color: var(--gray); line-height: 1.65; }
 
         /* Architecture */
         .arch-box {
-            background: var(--dark2); border-radius: 16px; padding: 40px;
+            background: var(--dark2); border-radius: 14px; padding: 36px;
             font-family: 'JetBrains Mono', monospace; color: #e2e8f0;
-            font-size: 0.82rem; line-height: 1.9; overflow-x: auto;
+            font-size: 0.8rem; line-height: 1.9; overflow-x: auto;
         }
         .arch-box .c-blue { color: #60a5fa; }
         .arch-box .c-green { color: #34d399; }
@@ -115,62 +125,30 @@
 
         /* Data table */
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f8fafc; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); padding: 14px 16px; text-align: left; border-bottom: 2px solid var(--border); }
-        td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: #374151; }
+        th { background: #f8fafc; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--border); }
+        td { padding: 13px 16px; border-bottom: 1px solid var(--border); font-size: 0.88rem; color: #374151; }
         tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f9fafb; }
-        .tag { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; }
+        tr:hover td { background: #fafafa; }
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
         .tag-input { background: #dbeafe; color: #1e40af; }
         .tag-proxy { background: #d1fae5; color: #065f46; }
         .tag-sup { background: #fef3c7; color: #92400e; }
 
-        /* Globe animation */
-        .globe-wrap { position: relative; width: 420px; height: 420px; flex-shrink: 0; }
-        #globeCanvas { border-radius: 50%; }
-
-        /* Results */
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .result-card {
-            background: linear-gradient(135deg, #0f4c75, #1b98e0);
-            border-radius: 16px; padding: 28px; color: white; text-align: center;
+        /* Citation */
+        .cite-box {
+            background: #f8fafc; border: 1px solid var(--border); border-radius: 12px;
+            padding: 28px 32px; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem; line-height: 1.8; color: #374151;
         }
-        .result-val { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; }
-        .result-label { font-size: 0.8rem; opacity: 0.85; margin-top: 4px; }
-        .result-card.light { background: white; border: 1px solid var(--border); }
-        .result-card.light .result-val { color: var(--dark); }
-        .result-card.light .result-label { color: var(--gray); }
-
-        /* Training status */
-        .status-bar { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px 28px; display: flex; align-items: center; gap: 16px; }
-        .status-dot { width: 10px; height: 10px; background: #16a34a; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
-        .status-text { font-size: 0.9rem; color: #15803d; font-weight: 600; }
-        .status-sub { font-size: 0.82rem; color: #166534; margin-top: 2px; }
-
-        /* Demo iframe */
-        .demo-wrap {
-            border-radius: 20px; overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
-            background: #f9fafb;
-        }
-        .demo-wrap iframe {
-            width: 100%; height: 780px; border: none; display: block;
-        }
-        .demo-note {
-            margin-top: 20px; text-align: center;
-            font-size: 0.85rem; color: var(--gray);
-        }
-        .demo-note a { color: var(--accent); text-decoration: none; font-weight: 600; }
 
         /* Footer */
-        footer { background: var(--dark2); color: #6b7280; padding: 48px 0; text-align: center; font-size: 0.85rem; }
+        footer { background: var(--dark2); color: #6b7280; padding: 40px 0; text-align: center; font-size: 0.83rem; }
         footer a { color: #9ca3af; text-decoration: none; }
         footer a:hover { color: white; }
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
-            .hero-stats { gap: 24px; }
+            .hero-stats { gap: 20px; }
         }
     </style>
 </head>
@@ -181,12 +159,11 @@
     <div class="container">
         <a class="logo" href="#"><span>ARIA</span></a>
         <ul class="nav-links">
+            <li><a href="#demo">Try it</a></li>
             <li><a href="#overview">Overview</a></li>
             <li><a href="#architecture">Architecture</a></li>
             <li><a href="#data">Data</a></li>
-            <li><a href="#demo">Try it</a></li>
-            <li><a href="#results">Results</a></li>
-            <li><a href="https://github.com/AmmarKheder/ARIA">GitHub</a></li>
+            <li><a href="https://github.com/AmmarKheder/ARIA" target="_blank">GitHub</a></li>
         </ul>
     </div>
 </nav>
@@ -195,121 +172,117 @@
 <section class="hero">
     <div class="container">
         <div class="hero-content">
-            <div class="hero-badge">🌍 Global · 1km Resolution · Open Source</div>
-            <p class="hero-subtitle">Attention-based Resolution-Integrated Air quality</p>
+            <div class="hero-badge">🌍 Global · 1km · Open Source</div>
             <h1><span>ARIA</span> — Global PM₂.₅<br>Forecasting at 1km</h1>
             <p class="hero-desc">
-                A deep learning model bridging coarse atmospheric reanalysis with fine-scale
-                emission proxies to forecast PM₂.₅ anywhere on Earth at 1km resolution.
+                A dual-branch Vision Transformer that fuses ERA5 meteorology, CAMS chemistry,
+                and fine-scale emission proxies to forecast PM₂.₅ anywhere on Earth
+                at 1km resolution.
             </p>
             <div class="hero-btns">
-                <a href="https://github.com/AmmarKheder/ARIA" class="btn btn-primary">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-                    View Code
-                </a>
-                <a href="#architecture" class="btn btn-secondary">Architecture →</a>
+                <a href="#demo" class="btn btn-primary">Try it →</a>
+                <a href="https://github.com/AmmarKheder/ARIA" class="btn btn-secondary" target="_blank">GitHub</a>
+            </div>
+            <div class="status-bar" style="margin-bottom:40px;">
+                <div class="status-dot"></div>
+                <div>
+                    <div class="status-text">Training in progress — 128 × MI250X GPUs · 16 nodes</div>
+                    <div class="status-sub">ERA5 + CAMS + GRIP4 + VIIRS + WorldPop · 2018–2022</div>
+                </div>
             </div>
             <div class="hero-stats">
-                <div class="stat"><div class="stat-value">1km</div><div class="stat-label">Output Resolution</div></div>
-                <div class="stat"><div class="stat-value">20yr</div><div class="stat-label">Training Data</div></div>
-                <div class="stat"><div class="stat-value">128</div><div class="stat-label">GPUs Training</div></div>
+                <div class="stat"><div class="stat-value">1km</div><div class="stat-label">Resolution</div></div>
+                <div class="stat"><div class="stat-value">20yr</div><div class="stat-label">Training data</div></div>
+                <div class="stat"><div class="stat-value">128</div><div class="stat-label">GPUs</div></div>
                 <div class="stat"><div class="stat-value">6</div><div class="stat-label">Pollutants</div></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Training Status -->
-<div style="background:#f0fdf4; border-top:1px solid #bbf7d0; border-bottom:1px solid #bbf7d0; padding:20px 0;">
+<!-- Demo -->
+<section id="demo" style="background: #f8fafc;">
     <div class="container">
-        <div class="status-bar">
-            <div class="status-dot"></div>
-            <div>
-                <div class="status-text">Model training in progress — 128 × AMD MI250X GPUs (16 nodes)</div>
-                <div class="status-sub">Training on ERA5 + CAMS + GRIP4 + VIIRS + WorldPop · 2018–2022 · Results coming soon</div>
-            </div>
+        <div class="section-label">Live Demo</div>
+        <h2 class="section-title">Try ARIA</h2>
+        <p class="section-sub">Select a region and date, upload your own ERA5 / CAMS files, or generate a CDS download script.</p>
+        <div class="divider"></div>
+        <div class="demo-wrap">
+            <iframe
+                src="https://ammarkheder-aria.hf.space"
+                title="ARIA Demo"
+                allow="clipboard-read; clipboard-write"
+                loading="lazy">
+            </iframe>
         </div>
+        <p class="demo-note">Powered by HuggingFace Spaces · Checkpoint available once training completes</p>
     </div>
-</div>
+</section>
 
 <!-- Overview -->
 <section id="overview" style="background: white;">
     <div class="container">
         <div class="section-label">Overview</div>
         <h2 class="section-title">Why ARIA?</h2>
-        <p class="section-sub">Existing global PM₂.₅ products are either too coarse (25km) or lack forecasting capability. ARIA bridges this gap.</p>
+        <p class="section-sub">Existing global PM₂.₅ products are either too coarse or lack forecasting capability. ARIA bridges this gap.</p>
         <div class="divider"></div>
         <div class="cards">
             <div class="card">
                 <div class="card-icon">🌐</div>
                 <h3>Truly Global</h3>
-                <p>Covers the entire Earth — trained on worldwide data, not just regional subsets. Works equally well over Europe, Asia, Africa, and Americas.</p>
+                <p>Trained on worldwide data — works equally over Europe, Asia, Africa, and the Americas.</p>
             </div>
             <div class="card">
                 <div class="card-icon">🔬</div>
                 <h3>1km Resolution</h3>
-                <p>25× finer than CAMS operational forecasts (0.75°). Captures urban street-level pollution gradients and topographic effects.</p>
+                <p>Far finer than operational CAMS forecasts. Captures urban gradients and topographic effects.</p>
             </div>
             <div class="card">
                 <div class="card-icon">🏭</div>
                 <h3>Emission-Aware</h3>
-                <p>Integrates road networks, nighttime lights, and population density as structural emission priors — first model to do so at global scale.</p>
+                <p>Integrates road networks, nighttime lights, and population density as structural emission priors.</p>
             </div>
             <div class="card">
                 <div class="card-icon">⚡</div>
-                <h3>Fully Operational</h3>
-                <p>Requires only ERA5 + CAMS at inference — both publicly available from Copernicus. No satellite imagery or ground stations needed.</p>
+                <h3>Operational</h3>
+                <p>Requires only ERA5 + CAMS at inference — both freely available from Copernicus.</p>
             </div>
             <div class="card">
                 <div class="card-icon">📅</div>
                 <h3>Multi-Horizon</h3>
-                <p>Forecasts PM₂.₅ at J+1, J+2, J+3, J+4 daily horizons. Supports near-real-time air quality alerts worldwide.</p>
+                <p>Forecasts at J+1 to J+4 daily horizons. Supports near-real-time air quality monitoring.</p>
             </div>
             <div class="card">
                 <div class="card-icon">🔓</div>
                 <h3>Open Source</h3>
-                <p>Full codebase, pretrained checkpoints, and inference API available on GitHub and HuggingFace. Reproducible and extensible.</p>
+                <p>Full codebase and pretrained checkpoints on GitHub and HuggingFace.</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Architecture -->
-<section id="architecture" style="background: #f9fafb;">
+<section id="architecture" style="background: #f8fafc;">
     <div class="container">
         <div class="section-label">Architecture</div>
         <h2 class="section-title">Cross-Resolution Attention</h2>
-        <p class="section-sub">ARIA fuses global atmospheric context with fine-scale emission structure through a dual-branch Vision Transformer with cross-attention.</p>
+        <p class="section-sub">ARIA fuses global atmospheric context with fine-scale emission structure through a dual-branch Vision Transformer.</p>
         <div class="divider"></div>
         <div class="arch-box">
-<span class="c-gray">┌─────────────────────────────────────────────────────────────────┐</span>
-<span class="c-gray">│                        ARIA Architecture                        │</span>
-<span class="c-gray">└─────────────────────────────────────────────────────────────────┘</span>
+<span class="c-blue">ERA5 (0.25°, 72ch)</span>      → <span class="c-green">Global Branch (ViT)</span>    ─────────────┐
+168×280 crop                  depth=8, dim=768                         │
+                               patch_size=8 → 735 tokens               │
+                                                                        ├──→ <span class="c-yellow">Cross-Attention</span> (2 layers)
+<span class="c-blue">CAMS (12ch) + Elev (1ch)</span>                                          │        local queries ↔ global k/v
+<span class="c-blue">Roads (1ch) + Lights (1ch)</span> → <span class="c-green">Local Branch  (ViT)</span>  ──────────┘
+<span class="c-blue">Population (1ch) + LatLon</span>    depth=6, dim=512                              ↓
+<span class="c-gray">── 18 channels total ──</span>      patch_size=16 → 1024 tokens     <span class="c-yellow">CNN Decoder</span>
+                                                                 32→64→128→256→512
+                                                                        ↓
+                                                             <span class="c-red">PM₂.₅ @ 1km</span>  (delta prediction)
 
-<span class="c-blue">ERA5 (0.25°, 72ch)</span>      → <span class="c-green">Global Branch (ViT-L)</span>   ──────────────┐
-168×280 crop                  depth=8, dim=768                          │
-                               patch_size=8                              │
-                               → 735 tokens                              │
-                                                                         ├──→ <span class="c-yellow">Cross-Attention</span>
-<span class="c-blue">CAMS (0.75°, 12ch)</span>     →  ─────────────────────────────┐          │        (2 layers)
-<span class="c-blue">Elevation (1ch)</span>                                           │          │       local → global
-<span class="c-blue">Road density (1ch)</span>     → <span class="c-green">Local Branch  (ViT-B)</span>   ──┘          │
-<span class="c-blue">Nighttime lights (1ch)</span>    depth=6, dim=512                            │
-<span class="c-blue">Population (1ch)</span>          patch_size=16, 512×512                      │
-<span class="c-blue">Lat/Lon (2ch)</span>             → 1024 tokens + skip                       │
-<span class="c-gray">── 18 channels total ──</span>                                              │
-                                                                         ↓
-                                                              <span class="c-yellow">CNN Decoder</span>
-                                                              bilinear upsample
-                                                              32→64→128→256→512
-                                                              + skip connection
-                                                                         ↓
-                                                              <span class="c-red">PM₂.₅ @ 1km</span>
-                                                              512×512 patch
-                                                              delta prediction
-
-<span class="c-gray">Training: GHAP supervision (0.01°) · bf16-mixed · 128 GPUs</span>
-<span class="c-gray">Inference: ERA5 + CAMS + static layers only (no GHAP needed)</span>
+<span class="c-gray">Supervision: GHAP 0.01° · bf16 mixed precision · 128 GPUs · DDP</span>
+<span class="c-gray">Inference: ERA5 + CAMS + static layers only</span>
         </div>
     </div>
 </section>
@@ -323,92 +296,33 @@
         <div class="divider"></div>
         <table>
             <thead>
-                <tr>
-                    <th>Source</th>
-                    <th>Variable</th>
-                    <th>Resolution</th>
-                    <th>Years</th>
-                    <th>Role</th>
-                </tr>
+                <tr><th>Source</th><th>Variable</th><th>Resolution</th><th>Years</th><th>Role</th></tr>
             </thead>
             <tbody>
-                <tr><td><strong>ERA5</strong> (ECMWF)</td><td>30 atmospheric variables</td><td>0.25°</td><td>2003–2022</td><td><span class="tag tag-input">Input</span></td></tr>
+                <tr><td><strong>ERA5</strong></td><td>30 atmospheric variables</td><td>0.25°</td><td>2003–2022</td><td><span class="tag tag-input">Input</span></td></tr>
                 <tr><td><strong>CAMS EAC4</strong></td><td>PM₂.₅, NO₂, O₃, SO₂, CO, PM₁₀</td><td>0.75°</td><td>2003–2022</td><td><span class="tag tag-input">Input</span></td></tr>
                 <tr><td><strong>GMTED2010</strong></td><td>Elevation</td><td>~250m</td><td>Static</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
                 <tr><td><strong>GRIP4</strong></td><td>Global road density</td><td>500m</td><td>Static</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
                 <tr><td><strong>VIIRS VNP46A4</strong></td><td>Nighttime lights</td><td>500m</td><td>2019</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
                 <tr><td><strong>WorldPop</strong></td><td>Population density</td><td>1km</td><td>2020</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
-                <tr><td><strong>GHAP</strong></td><td>PM₂.₅ ground truth</td><td>0.01° (1km)</td><td>2018–2022</td><td><span class="tag tag-sup">Supervision</span></td></tr>
+                <tr><td><strong>GHAP</strong></td><td>PM₂.₅ ground truth</td><td>0.01°</td><td>2018–2022</td><td><span class="tag tag-sup">Supervision</span></td></tr>
             </tbody>
         </table>
     </div>
 </section>
 
-<!-- Results -->
-<section id="results" style="background: #f9fafb;">
-    <div class="container">
-        <div class="section-label">Results</div>
-        <h2 class="section-title">Performance</h2>
-        <p class="section-sub">Results against OpenAQ ground stations. Model currently training — preliminary results from regional experiments.</p>
-        <div class="divider"></div>
-        <div class="results-grid">
-            <div class="result-card">
-                <div class="result-val">−46%</div>
-                <div class="result-label">RMSE vs CAMS forecast</div>
-            </div>
-            <div class="result-card">
-                <div class="result-val">−53%</div>
-                <div class="result-label">RMSE vs Aurora</div>
-            </div>
-            <div class="result-card">
-                <div class="result-val">−33%</div>
-                <div class="result-label">RMSE vs CAQRA (China)</div>
-            </div>
-            <div class="result-card light">
-                <div class="result-val">25.7</div>
-                <div class="result-label">Mean RMSE (µg/m³)</div>
-            </div>
-        </div>
-        <p style="margin-top:24px; font-size:0.85rem; color:var(--gray);">* Preliminary results on China regional experiment. Global model results coming soon.</p>
-    </div>
-</section>
-
-<!-- Demo -->
-<section id="demo" style="background: white;">
-    <div class="container">
-        <div class="section-label">Live Demo</div>
-        <h2 class="section-title">Try ARIA</h2>
-        <p class="section-sub">Select a region and date, or upload your own ERA5 / CAMS files. ARIA will forecast PM₂.₅ at 1km resolution.</p>
-        <div class="divider"></div>
-        <div class="demo-wrap">
-            <iframe
-                src="https://ammarkheder-aria.hf.space"
-                title="ARIA Demo"
-                allow="accelerometer; camera; microphone; clipboard-read; clipboard-write"
-                loading="lazy">
-            </iframe>
-        </div>
-        <p class="demo-note">
-            Running on <a href="https://huggingface.co/spaces/ammarkheder/ARIA" target="_blank">🤗 HuggingFace Spaces</a> ·
-            Need data? Use the <strong>Download Code</strong> tab to get ERA5 + CAMS scripts ·
-            Bring your own checkpoint via the <strong>Model</strong> tab.
-        </p>
-    </div>
-</section>
-
 <!-- Citation -->
-<section style="background: #f9fafb;">
+<section style="background: #f8fafc;">
     <div class="container">
         <div class="section-label">Citation</div>
         <h2 class="section-title">Cite ARIA</h2>
         <div class="divider"></div>
-        <div class="arch-box" style="font-size:0.85rem;">
-<span class="c-green">@article</span>{kheder2025aria,
-  <span class="c-blue">title</span>   = {ARIA: Attention-based Resolution-Integrated Air quality Forecasting at 1km},
-  <span class="c-blue">author</span>  = {Kheder, Ammar and others},
-  <span class="c-blue">journal</span> = {Nature Communications},
-  <span class="c-blue">year</span>    = {2025},
-  <span class="c-blue">note</span>    = {Under review}
+        <div class="cite-box">
+@article{kheder2025aria,<br>
+&nbsp;&nbsp;title  = {ARIA: Attention-based Resolution-Integrated Air quality Forecasting at 1km},<br>
+&nbsp;&nbsp;author = {Kheder, Ammar and others},<br>
+&nbsp;&nbsp;year   = {2025},<br>
+&nbsp;&nbsp;note   = {Manuscript in preparation}<br>
 }
         </div>
     </div>
@@ -417,15 +331,14 @@
 <!-- Footer -->
 <footer>
     <div class="container">
-        <p style="margin-bottom:12px;">
-            <strong style="color:#e2e8f0;">ARIA</strong> — Attention-based Resolution-Integrated Air quality
+        <p style="margin-bottom:10px; color:#e2e8f0; font-weight:600;">ARIA</p>
+        <p>Attention-based Resolution-Integrated Air quality &nbsp;·&nbsp; Global PM₂.₅ at 1km</p>
+        <p style="margin-top:10px;">
+            <a href="https://github.com/AmmarKheder/ARIA" target="_blank">GitHub</a> &nbsp;·&nbsp;
+            <a href="https://huggingface.co/spaces/ammarkheder/ARIA" target="_blank">HuggingFace</a> &nbsp;·&nbsp;
+            <a href="https://ammarkheder.github.io" target="_blank">Portfolio</a>
         </p>
-        <p>
-            <a href="https://github.com/AmmarKheder/ARIA">GitHub</a> ·
-            <a href="https://ammarkheder.github.io/cran_pm/">CRAN-PM</a> ·
-            <a href="https://ammarkheder.github.io">Portfolio</a>
-        </p>
-        <p style="margin-top:16px; font-size:0.78rem;">© 2025 Ammar Kheder</p>
+        <p style="margin-top:16px; font-size:0.75rem;">© 2025 Ammar Kheder</p>
     </div>
 </footer>
 
