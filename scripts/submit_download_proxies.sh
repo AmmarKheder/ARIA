@@ -16,5 +16,5 @@ source /scratch/project_462000640/ammar/aq_net2/venv_pytorch_rocm/bin/activate
 pip install rasterio --quiet
 
 echo "Start: $(date)"
-python /scratch/project_462001140/ammar/eccv/topoflow_global/scripts/download_emission_proxies.py
+python /scratch/project_462001140/ammar/eccv/aria/scripts/download_emission_proxies.py
 echo "End: $(date)"

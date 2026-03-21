@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=aria_global
-#SBATCH --output=/scratch/project_462001140/ammar/eccv/topoflow_global/scripts/aria_global_%j.out
+#SBATCH --output=/scratch/project_462001140/ammar/eccv/aria/scripts/aria_global_%j.out
 #SBATCH --account=project_462001140
 #SBATCH --partition=standard-g
 #SBATCH --time=2-00:00:00
@@ -22,8 +22,8 @@ srun --ntasks-per-node=1 mkdir -p $MIOPEN_USER_DB_PATH
 
 source /scratch/project_462000640/ammar/aq_net2/venv_pytorch_rocm/bin/activate
 
-export CKPT_DIR=/scratch/project_462001140/ammar/eccv/topoflow_global/checkpoints_global
-export LOG_DIR=/scratch/project_462001140/ammar/eccv/topoflow_global/logs_global
+export CKPT_DIR=/scratch/project_462001140/ammar/eccv/aria/checkpoints_global
+export LOG_DIR=/scratch/project_462001140/ammar/eccv/aria/logs_global
 export MASTER_ADDR=$(scontrol show hostnames $SLURM_JOB_NODELIST | head -n1)
 export MASTER_PORT=29500
 
@@ -31,7 +31,7 @@ echo "=== ARIA Global Training ==="
 echo "Nodes: $SLURM_NNODES, GPUs/node: 8, Total GPUs: $((SLURM_NNODES * 8))"
 echo "Start: $(date)"
 
-srun python /scratch/project_462001140/ammar/eccv/topoflow_global/train_global.py \
-    --config /scratch/project_462001140/ammar/eccv/topoflow_global/configs/global_pretrain.yaml
+srun python /scratch/project_462001140/ammar/eccv/aria/train_global.py \
+    --config /scratch/project_462001140/ammar/eccv/aria/configs/global_pretrain.yaml
 
 echo "End: $(date)"

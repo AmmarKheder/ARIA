@@ -24,7 +24,7 @@ from dataset_global import GlobalARIADataModule
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="/scratch/project_462001140/ammar/eccv/topoflow_global/configs/global_pretrain.yaml")
+    parser.add_argument("--config", default="/scratch/project_462001140/ammar/eccv/aria/configs/global_pretrain.yaml")
     parser.add_argument("--resume",   default=None)
     parser.add_argument("--finetune", default=None)
     args = parser.parse_args()
@@ -43,8 +43,8 @@ def main():
         model.load_state_dict(state, strict=False)
         print(f"Loaded finetune weights from {args.finetune}")
 
-    ckpt_dir = os.environ.get("CKPT_DIR", "/scratch/project_462001140/ammar/eccv/topoflow_global/checkpoints_global")
-    log_dir  = os.environ.get("LOG_DIR",  "/scratch/project_462001140/ammar/eccv/topoflow_global/logs_global")
+    ckpt_dir = os.environ.get("CKPT_DIR", "/scratch/project_462001140/ammar/eccv/aria/checkpoints_global")
+    log_dir  = os.environ.get("LOG_DIR",  "/scratch/project_462001140/ammar/eccv/aria/logs_global")
 
     callbacks = [
         ModelCheckpoint(
