@@ -1,4 +1,4 @@
-gradio>=4.0.0
+gradio>=5.0.0
 anthropic>=0.25.0
 numpy>=1.24.0
 xarray>=2023.1.0

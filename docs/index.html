@@ -147,6 +147,22 @@
         .status-text { font-size: 0.9rem; color: #15803d; font-weight: 600; }
         .status-sub { font-size: 0.82rem; color: #166534; margin-top: 2px; }
 
+        /* Demo iframe */
+        .demo-wrap {
+            border-radius: 20px; overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            background: #f9fafb;
+        }
+        .demo-wrap iframe {
+            width: 100%; height: 780px; border: none; display: block;
+        }
+        .demo-note {
+            margin-top: 20px; text-align: center;
+            font-size: 0.85rem; color: var(--gray);
+        }
+        .demo-note a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
         /* Footer */
         footer { background: var(--dark2); color: #6b7280; padding: 48px 0; text-align: center; font-size: 0.85rem; }
         footer a { color: #9ca3af; text-decoration: none; }
@@ -168,6 +184,7 @@
             <li><a href="#overview">Overview</a></li>
             <li><a href="#architecture">Architecture</a></li>
             <li><a href="#data">Data</a></li>
+            <li><a href="#demo">Try it</a></li>
             <li><a href="#results">Results</a></li>
             <li><a href="https://github.com/AmmarKheder/ARIA">GitHub</a></li>
         </ul>
@@ -356,8 +373,31 @@
     </div>
 </section>
 
+<!-- Demo -->
+<section id="demo" style="background: white;">
+    <div class="container">
+        <div class="section-label">Live Demo</div>
+        <h2 class="section-title">Try ARIA</h2>
+        <p class="section-sub">Select a region and date, or upload your own ERA5 / CAMS files. ARIA will forecast PM₂.₅ at 1km resolution.</p>
+        <div class="divider"></div>
+        <div class="demo-wrap">
+            <iframe
+                src="https://ammarkheder-aria.hf.space"
+                title="ARIA Demo"
+                allow="accelerometer; camera; microphone; clipboard-read; clipboard-write"
+                loading="lazy">
+            </iframe>
+        </div>
+        <p class="demo-note">
+            Running on <a href="https://huggingface.co/spaces/ammarkheder/ARIA" target="_blank">🤗 HuggingFace Spaces</a> ·
+            Need data? Use the <strong>Download Code</strong> tab to get ERA5 + CAMS scripts ·
+            Bring your own checkpoint via the <strong>Model</strong> tab.
+        </p>
+    </div>
+</section>
+
 <!-- Citation -->
-<section style="background: white;">
+<section style="background: #f9fafb;">
     <div class="container">
         <div class="section-label">Citation</div>
         <h2 class="section-title">Cite ARIA</h2>

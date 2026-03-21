@@ -4,11 +4,11 @@ emoji: 🌍
 colorFrom: blue
 colorTo: indigo
 sdk: gradio
-sdk_version: "4.0.0"
+sdk_version: "5.23.3"
 app_file: app.py
 pinned: true
 license: mit
-short_description: Global PM2.5 forecasting at 1km resolution using dual-branch attention
+short_description: Global PM2.5 forecasting at 1km resolution
 ---
 
 # ARIA — Attention-based Resolution-Integrated Air quality

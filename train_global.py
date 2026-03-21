@@ -13,12 +13,12 @@ import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping, LearningRateMonitor
 from pytorch_lightning.loggers import TensorBoardLogger
 
-# Use the ARIA model and trainer from the site package
-CRANPM_PATH = Path("/scratch/project_462001140/ammar/eccv/topoflow_europe/aria_site")
+# Use the CRAN-PM model and trainer (same architecture, global dataset differs)
+CRANPM_PATH = Path("/scratch/project_462001140/ammar/eccv/topoflow_europe/cran_pm_site")
 sys.path.insert(0, str(CRANPM_PATH))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from aria.training.trainer import ARIALightning
+from cranpm.training.trainer import CranPMLightning as ARIALightning
 from dataset_global import GlobalARIADataModule
 
 
