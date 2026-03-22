@@ -438,20 +438,22 @@
     <div class="container">
         <div class="section-label">Data</div>
         <h2 class="section-title">Multi-Source Fusion</h2>
-        <p class="section-sub">ARIA integrates 7 data sources spanning atmospheric reanalysis, satellite observations, and geospatial proxies.</p>
+        <p class="section-sub">ARIA integrates 9 data sources spanning atmospheric reanalysis, satellite observations, geospatial proxies, and independent ground stations.</p>
         <div class="divider"></div>
         <table>
             <thead>
                 <tr><th>Source</th><th>Variable</th><th>Resolution</th><th>Years</th><th>Role</th></tr>
             </thead>
             <tbody>
-                <tr><td><strong>ERA5</strong></td><td>30 atmospheric variables</td><td>0.25°</td><td>2003–2022</td><td><span class="tag tag-input">Input</span></td></tr>
-                <tr><td><strong>CAMS EAC4</strong></td><td>PM₂.₅, NO₂, O₃, SO₂, CO, PM₁₀</td><td>0.75°</td><td>2003–2022</td><td><span class="tag tag-input">Input</span></td></tr>
+                <tr><td><strong>ERA5</strong></td><td>30 pressure-level + 5 surface variables</td><td>0.25°</td><td>2018–2022</td><td><span class="tag tag-input">Input</span></td></tr>
+                <tr><td><strong>CAMS EAC4</strong></td><td>PM₂.₅, NO₂, O₃, SO₂, CO, PM₁₀</td><td>0.4°</td><td>2018–2022</td><td><span class="tag tag-input">Input</span></td></tr>
                 <tr><td><strong>GMTED2010</strong></td><td>Elevation</td><td>~250m</td><td>Static</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
-                <tr><td><strong>GRIP4</strong></td><td>Global road density</td><td>500m</td><td>Static</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
-                <tr><td><strong>VIIRS VNP46A4</strong></td><td>Nighttime lights</td><td>500m</td><td>2019</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
+                <tr><td><strong>GHSL</strong></td><td>Built-up surface (nighttime lights proxy)</td><td>1km</td><td>2020</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
                 <tr><td><strong>WorldPop</strong></td><td>Population density</td><td>1km</td><td>2020</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
-                <tr><td><strong>GHAP</strong></td><td>PM₂.₅ ground truth</td><td>0.01°</td><td>2018–2022</td><td><span class="tag tag-sup">Supervision</span></td></tr>
+                <tr><td><strong>GRIP4</strong></td><td>Global road density</td><td>500m</td><td>Static</td><td><span class="tag tag-proxy">Proxy</span></td></tr>
+                <tr><td><strong>GHAP</strong></td><td>PM₂.₅ ground truth (log-normalized)</td><td>0.01° (1km)</td><td>2018–2022</td><td><span class="tag tag-sup">Training</span></td></tr>
+                <tr><td><strong>OpenAQ</strong></td><td>PM₂.₅ station measurements</td><td>Point</td><td>2025</td><td><span class="tag tag-sup">Zero-Shot</span></td></tr>
+                <tr><td><strong>CNEMC</strong></td><td>PM₂.₅ station measurements (China)</td><td>Point</td><td>2025</td><td><span class="tag tag-sup">Zero-Shot</span></td></tr>
             </tbody>
         </table>
     </div>
@@ -494,10 +496,10 @@
 </footer>
 
 <script>
-// Initialize Leaflet map with station markers
+// Load all 11,931 stations from JSON and render on Leaflet map
 (function() {
     const map = L.map('station-map', {
-        center: [25, 40],
+        center: [25, 20],
         zoom: 2,
         scrollWheelZoom: false,
         zoomControl: true,
@@ -508,63 +510,6 @@
         maxZoom: 18,
     }).addTo(map);
 
-    // Sample station data (representative subset for web performance)
-    // Full dataset: 12,416 stations from OpenAQ + CNEMC
-    const stations = [
-        // OpenAQ — major cities worldwide (sample)
-        {lat:48.86,lon:2.35,pm25:12,src:'OpenAQ',name:'Paris, France'},
-        {lat:40.71,lon:-74.01,pm25:8,src:'OpenAQ',name:'New York, USA'},
-        {lat:51.51,lon:-0.13,pm25:11,src:'OpenAQ',name:'London, UK'},
-        {lat:28.61,lon:77.21,pm25:142,src:'OpenAQ',name:'Delhi, India'},
-        {lat:13.76,lon:100.50,pm25:38,src:'OpenAQ',name:'Bangkok, Thailand'},
-        {lat:-23.55,lon:-46.63,pm25:16,src:'OpenAQ',name:'Sao Paulo, Brazil'},
-        {lat:6.52,lon:3.37,pm25:45,src:'OpenAQ',name:'Lagos, Nigeria'},
-        {lat:-33.87,lon:151.21,pm25:7,src:'OpenAQ',name:'Sydney, Australia'},
-        {lat:35.68,lon:139.69,pm25:14,src:'OpenAQ',name:'Tokyo, Japan'},
-        {lat:55.76,lon:37.62,pm25:18,src:'OpenAQ',name:'Moscow, Russia'},
-        {lat:19.43,lon:-99.13,pm25:24,src:'OpenAQ',name:'Mexico City, Mexico'},
-        {lat:-1.29,lon:36.82,pm25:22,src:'OpenAQ',name:'Nairobi, Kenya'},
-        {lat:52.52,lon:13.41,pm25:13,src:'OpenAQ',name:'Berlin, Germany'},
-        {lat:37.57,lon:126.98,pm25:26,src:'OpenAQ',name:'Seoul, South Korea'},
-        {lat:14.60,lon:120.98,pm25:32,src:'OpenAQ',name:'Manila, Philippines'},
-        {lat:30.04,lon:31.24,pm25:65,src:'OpenAQ',name:'Cairo, Egypt'},
-        {lat:23.81,lon:90.41,pm25:98,src:'OpenAQ',name:'Dhaka, Bangladesh'},
-        {lat:27.72,lon:85.32,pm25:88,src:'OpenAQ',name:'Kathmandu, Nepal'},
-        {lat:-6.21,lon:106.85,pm25:35,src:'OpenAQ',name:'Jakarta, Indonesia'},
-        {lat:41.01,lon:28.98,pm25:21,src:'OpenAQ',name:'Istanbul, Turkey'},
-        {lat:33.69,lon:73.04,pm25:72,src:'OpenAQ',name:'Islamabad, Pakistan'},
-        {lat:12.97,lon:77.59,pm25:56,src:'OpenAQ',name:'Bangalore, India'},
-        {lat:19.08,lon:72.88,pm25:78,src:'OpenAQ',name:'Mumbai, India'},
-        {lat:34.05,lon:-118.24,pm25:15,src:'OpenAQ',name:'Los Angeles, USA'},
-        {lat:47.61,lon:-122.33,pm25:9,src:'OpenAQ',name:'Seattle, USA'},
-        {lat:45.46,lon:9.19,pm25:28,src:'OpenAQ',name:'Milan, Italy'},
-        {lat:50.08,lon:14.44,pm25:19,src:'OpenAQ',name:'Prague, Czech Republic'},
-        {lat:48.21,lon:16.37,pm25:17,src:'OpenAQ',name:'Vienna, Austria'},
-        {lat:59.33,lon:18.07,pm25:6,src:'OpenAQ',name:'Stockholm, Sweden'},
-        {lat:21.03,lon:105.85,pm25:48,src:'OpenAQ',name:'Hanoi, Vietnam'},
-        // CNEMC — China stations (sample)
-        {lat:39.91,lon:116.40,pm25:62,src:'CNEMC',name:'Beijing'},
-        {lat:31.23,lon:121.47,pm25:38,src:'CNEMC',name:'Shanghai'},
-        {lat:23.13,lon:113.26,pm25:28,src:'CNEMC',name:'Guangzhou'},
-        {lat:30.57,lon:104.07,pm25:45,src:'CNEMC',name:'Chengdu'},
-        {lat:29.56,lon:106.55,pm25:42,src:'CNEMC',name:'Chongqing'},
-        {lat:34.26,lon:108.94,pm25:55,src:'CNEMC',name:"Xi'an"},
-        {lat:30.59,lon:114.31,pm25:48,src:'CNEMC',name:'Wuhan'},
-        {lat:36.07,lon:120.38,pm25:35,src:'CNEMC',name:'Qingdao'},
-        {lat:22.54,lon:114.06,pm25:22,src:'CNEMC',name:'Shenzhen'},
-        {lat:28.68,lon:115.86,pm25:30,src:'CNEMC',name:'Nanchang'},
-        {lat:43.88,lon:125.32,pm25:35,src:'CNEMC',name:'Changchun'},
-        {lat:41.80,lon:123.43,pm25:42,src:'CNEMC',name:'Shenyang'},
-        {lat:45.75,lon:126.65,pm25:38,src:'CNEMC',name:'Harbin'},
-        {lat:37.87,lon:112.55,pm25:52,src:'CNEMC',name:'Taiyuan'},
-        {lat:36.67,lon:116.98,pm25:58,src:'CNEMC',name:'Jinan'},
-        {lat:34.75,lon:113.65,pm25:60,src:'CNEMC',name:'Zhengzhou'},
-        {lat:28.23,lon:112.94,pm25:33,src:'CNEMC',name:'Changsha'},
-        {lat:38.05,lon:114.49,pm25:68,src:'CNEMC',name:'Shijiazhuang'},
-        {lat:39.62,lon:118.18,pm25:55,src:'CNEMC',name:'Tangshan'},
-        {lat:37.46,lon:121.45,pm25:22,src:'CNEMC',name:'Weihai'},
-    ];
-
     function getColor(pm25) {
         return pm25 > 100 ? '#dc2626' :
                pm25 > 50  ? '#f59e0b' :
@@ -573,38 +518,43 @@
                             '#34d399';
     }
 
-    stations.forEach(s => {
-        const color = s.src === 'CNEMC' ? '#ef4444' : '#3b82f6';
-        const marker = L.circleMarker([s.lat, s.lon], {
-            radius: 5,
-            fillColor: getColor(s.pm25),
-            color: color,
-            weight: 1.5,
-            opacity: 0.9,
-            fillOpacity: 0.7,
-        }).addTo(map);
+    // stations.json: array of [lat, lon, pm25, src] where src: 0=OpenAQ, 1=CNEMC
+    fetch('stations.json')
+        .then(r => r.json())
+        .then(data => {
+            const srcNames = ['OpenAQ', 'CNEMC'];
+            const srcColors = ['#3b82f6', '#ef4444'];
+            data.forEach(s => {
+                const [lat, lon, pm25, src] = s;
+                L.circleMarker([lat, lon], {
+                    radius: src === 1 ? 3.5 : 2.5,
+                    fillColor: getColor(pm25),
+                    color: srcColors[src],
+                    weight: 0.8,
+                    opacity: 0.8,
+                    fillOpacity: 0.65,
+                }).addTo(map).bindPopup(
+                    `<div style="font-family:Inter,sans-serif;font-size:13px;line-height:1.6;">
+                        <span style="color:#6b7280;">${srcNames[src]}</span><br>
+                        <span style="font-size:20px;font-weight:800;color:${getColor(pm25)};">
+                            ${pm25} µg/m³
+                        </span><br>
+                        <span style="font-size:11px;color:#9ca3af;">
+                            Annual mean PM₂.₅ (2025) · ${lat.toFixed(2)}°, ${lon.toFixed(2)}°
+                        </span>
+                    </div>`
+                );
+            });
 
-        marker.bindPopup(
-            `<div style="font-family:Inter,sans-serif; font-size:13px; line-height:1.6;">
-                <strong>${s.name}</strong><br>
-                <span style="color:#6b7280;">Source: ${s.src}</span><br>
-                <span style="font-size:18px; font-weight:800; color:${getColor(s.pm25)};">
-                    ${s.pm25} µg/m³
-                </span><br>
-                <span style="font-size:11px; color:#9ca3af;">Annual mean PM₂.₅ (2025)</span>
-            </div>`
-        );
-    });
-
-    // Note for full deployment
-    const note = L.control({position: 'bottomleft'});
-    note.onAdd = function() {
-        const div = L.DomUtil.create('div', '');
-        div.style.cssText = 'background:white; padding:6px 10px; border-radius:6px; font-size:11px; color:#6b7280; box-shadow:0 1px 4px rgba(0,0,0,0.1);';
-        div.innerHTML = 'Showing representative sample · Full dataset: 12,416 stations';
-        return div;
-    };
-    note.addTo(map);
+            const info = L.control({position: 'bottomleft'});
+            info.onAdd = function() {
+                const div = L.DomUtil.create('div', '');
+                div.style.cssText = 'background:white;padding:8px 12px;border-radius:8px;font-size:12px;color:#374151;box-shadow:0 2px 6px rgba(0,0,0,0.12);font-family:Inter,sans-serif;';
+                div.innerHTML = '<strong>' + data.length.toLocaleString() + '</strong> monitoring stations · 2025 zero-shot evaluation';
+                return div;
+            };
+            info.addTo(map);
+        });
 })();
 </script>
 
