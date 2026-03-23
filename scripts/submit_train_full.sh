@@ -14,10 +14,6 @@ module load LUMI/25.03 partition/G rocm/6.0.3
 
 export NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3
 export NCCL_NET_GDR_LEVEL=3
-export MIOPEN_USER_DB_PATH=/tmp/miopen_cache_global_${SLURM_JOB_ID}
-export MIOPEN_DISABLE_CACHE=0
-
-# Create MIOpen cache on Lustre (shared filesystem, all nodes see it)
 export MIOPEN_USER_DB_PATH=/scratch/project_462001140/ammar/eccv/aria/miopen_cache_${SLURM_JOB_ID}
 mkdir -p $MIOPEN_USER_DB_PATH
 
@@ -28,8 +24,9 @@ export LOG_DIR=/scratch/project_462001140/ammar/eccv/aria/logs_global
 export MASTER_ADDR=$(scontrol show hostnames $SLURM_JOB_NODELIST | head -n1)
 export MASTER_PORT=29500
 
-echo "=== ARIA Global Training ==="
+echo "=== ARIA Global Training — FULL 2017-2022 ==="
 echo "Nodes: $SLURM_NNODES, GPUs/node: 8, Total GPUs: $((SLURM_NNODES * 8))"
+echo "Train: 2017-2022 | Val: 2022 | from SCRATCH"
 echo "Start: $(date)"
 
 srun python /scratch/project_462001140/ammar/eccv/aria/train_global.py \
