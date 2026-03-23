@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIA-Flow — Technical Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(148, 163, 184, 0.1); }
+        .gradient-text { background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .eq-box { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 1.5rem; overflow-x: auto; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">A</div>
+                <span class="text-lg font-semibold">ARIA-Flow <span class="text-slate-500 font-normal">/ Docs</span></span>
+            </a>
+            <div class="hidden md:flex gap-6 text-sm text-slate-400">
+                <a href="#flow-matching" class="hover:text-white transition">Flow Matching</a>
+                <a href="#architecture" class="hover:text-white transition">Architecture</a>
+                <a href="#data" class="hover:text-white transition">Data Processing</a>
+                <a href="#training" class="hover:text-white transition">Training</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 pt-28 pb-20">
+
+        <!-- Title -->
+        <div class="mb-16">
+            <h1 class="text-4xl font-bold mb-4"><span class="gradient-text">ARIA-Flow</span> Technical Documentation</h1>
+            <p class="text-lg text-slate-400">Conditional Flow Matching for Global High-Resolution Air Quality Estimation</p>
+        </div>
+
+        <!-- 1. Flow Matching -->
+        <section id="flow-matching" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-sm">1</span>
+                Conditional Flow Matching
+            </h2>
+
+            <p class="text-slate-400 mb-6">
+                ARIA-Flow uses Conditional Flow Matching (CFM) instead of score-based diffusion.
+                CFM defines a probability path between a base distribution $p_0 = \mathcal{N}(0, I)$ and the target PM2.5 distribution $p_1$
+                via a simple linear interpolation.
+            </p>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Linear interpolant path:</p>
+                $$x_t = (1 - t)\, x_0 + t \cdot x_1, \quad t \in [0, 1]$$
+                <p class="text-sm text-slate-400 mt-3">where $x_0 \sim \mathcal{N}(0, I)$ is Gaussian noise and $x_1$ is the target PM2.5 field (log1p normalized).</p>
+            </div>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">The target velocity field is constant along each path:</p>
+                $$v^*(x_t, t) = x_1 - x_0$$
+                <p class="text-sm text-slate-400 mt-3">The model learns $v_\theta(x_t, t, \text{cond}) \approx x_1 - x_0$ with MSE loss:</p>
+                $$\mathcal{L}_{\text{FM}} = \mathbb{E}_{t, x_0, x_1} \left[ \| v_\theta(x_t, t, \text{cond}) - (x_1 - x_0) \|^2 \right]$$
+            </div>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">At inference, we solve the ODE from $x_0 \sim \mathcal{N}(0, I)$ using $N=20$ Euler steps:</p>
+                $$x_{t+\Delta t} = x_t + \Delta t \cdot v_\theta(x_t, t, \text{cond}), \quad \Delta t = \frac{1}{N}$$
+            </div>
+
+            <div class="glass rounded-xl p-6 mt-6">
+                <h4 class="font-semibold text-sm mb-3 text-indigo-400">Why Flow Matching over Diffusion?</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> Straight ODE paths = only 20 steps vs 100+ for DDPM</li>
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> No noise schedule to tune (vs $\beta_t$ in diffusion)</li>
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> Stable training — MSE on velocity, no variance explosion</li>
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> Natural ensemble sampling: run N independent ODE trajectories for uncertainty</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2. Architecture -->
+        <section id="architecture" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 text-sm">2</span>
+                Model Architecture (107.7M Parameters)
+            </h2>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.1 AdaLN-Zero Time Conditioning</h3>
+            <p class="text-slate-400 mb-4">
+                The flow time $t \in [0,1]$ is embedded via sinusoidal positional encoding (256 frequencies) and projected through an MLP.
+                Each transformer block in the local branch uses Adaptive Layer Normalization with zero initialization (AdaLN-Zero) for conditioning:
+            </p>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Time embedding:</p>
+                $$c = \text{MLP}\left(\left[\sin(t \cdot 1000 \cdot \omega_k),\; \cos(t \cdot 1000 \cdot \omega_k),\; \tau_{\text{lead}}\right]\right) \in \mathbb{R}^{512}$$
+                <p class="text-sm text-slate-400 mt-4 mb-3">AdaLN-Zero modulation (6 parameters per block):</p>
+                $$(\gamma_1, \beta_1, \alpha_1, \gamma_2, \beta_2, \alpha_2) = \text{SiLU}(\text{Linear}(c))$$
+                $$h = x + \alpha_1 \cdot \text{Attn}\left(\text{LN}(x) \cdot (1 + \gamma_1) + \beta_1\right)$$
+                $$\text{out} = h + \alpha_2 \cdot \text{MLP}\left(\text{LN}(h) \cdot (1 + \gamma_2) + \beta_2\right)$$
+                <p class="text-sm text-slate-400 mt-3">All modulation weights initialized to zero &rarr; $\alpha_i = 0$ at init &rarr; each block is an identity function at initialization.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.2 Topology-Aware Attention (Block 0)</h3>
+            <p class="text-slate-400 mb-4">
+                The first block of the local branch uses elevation-informed attention with relative position bias:
+            </p>
+            <div class="eq-box mb-6">
+                $$\text{Attn}(Q, K, V) = \text{softmax}\left(\frac{Q \cdot K^T}{\sqrt{d}} + B_{\text{elev}} + B_{\text{pos}}\right) V$$
+                <p class="text-sm text-slate-400 mt-3">Pre-scaling: $(Q \cdot \text{scale}) \times K^T$ to prevent bf16 overflow in the matmul.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.3 Patch Embedding (MIOpen Bug Workaround)</h3>
+            <p class="text-slate-400 mb-4">
+                Due to a verified MIOpen Conv2d bug on AMD MI250X GPUs that produces corrupted outputs (~1e27 values), patch embedding uses <code class="text-indigo-400 bg-slate-800 px-2 py-0.5 rounded">F.unfold + nn.Linear</code> instead of <code class="text-slate-500 bg-slate-800 px-2 py-0.5 rounded line-through">nn.Conv2d</code>:
+            </p>
+            <div class="eq-box mb-6">
+                <pre class="text-sm text-slate-300 font-mono">
+# Instead of nn.Conv2d(19, 512, kernel_size=16, stride=16)
+patches = F.unfold(x, kernel_size=16, stride=16)  # (B, 19*16*16, 1024)
+tokens = self.proj(patches.transpose(1, 2))        # (B, 1024, 512)</pre>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.4 Full Architecture Summary</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-slate-400">
+                            <th class="py-3 px-4 text-left">Component</th>
+                            <th class="py-3 px-4 text-left">Input</th>
+                            <th class="py-3 px-4 text-left">Output</th>
+                            <th class="py-3 px-4 text-left">Config</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">TimeEmbedder</td>
+                            <td class="py-3 px-4 mono text-xs">t &in; [0,1], lead_time</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 512)</td>
+                            <td class="py-3 px-4 text-xs">256 freq + MLP</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">GlobalBranch</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 72, 168, 280)</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 735, 768)</td>
+                            <td class="py-3 px-4 text-xs">d=768, depth=8, heads=12</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">LocalBranchFlow</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 19, 512, 512) + t_emb</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 1024, 512) + skip</td>
+                            <td class="py-3 px-4 text-xs">d=512, depth=6, heads=8</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">CrossAttention</td>
+                            <td class="py-3 px-4 mono text-xs">local Q, global K/V</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 1024, 512)</td>
+                            <td class="py-3 px-4 text-xs">2 layers, 8 heads</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">CNN Decoder</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 512, 32, 32) + skip</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 1, 512, 512)</td>
+                            <td class="py-3 px-4 text-xs">5 stages, bilinear upsample</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. Data Processing -->
+        <section id="data" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 text-sm">3</span>
+                Data Processing
+            </h2>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.1 Target Normalization (GHAP PM2.5)</h3>
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Log1p transform with fixed global statistics:</p>
+                $$\hat{y} = \frac{\log(1 + y) - \mu}{\sigma}, \quad \mu = 2.416, \; \sigma = 0.800$$
+                <p class="text-sm text-slate-400 mt-3">Land mask threshold: $\hat{y} > -\mu/\sigma = -3.02$ (i.e., raw PM2.5 > 0).</p>
+                <p class="text-sm text-red-400/80 mt-2">Critical: using $\hat{y} > 0$ would exclude clean air pixels with raw PM2.5 &lt; 15 &mu;g/m&sup3;.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.2 Road Density Normalization</h3>
+            <p class="text-slate-400 mb-4">
+                Each OSM road segment contributes a weight to the raster grid based on highway type:
+            </p>
+            <div class="overflow-x-auto mb-4">
+                <table class="text-sm w-full">
+                    <thead><tr class="border-b border-slate-700 text-slate-400">
+                        <th class="py-2 px-3 text-left">Highway Type</th>
+                        <th class="py-2 px-3">Weight</th>
+                        <th class="py-2 px-3 text-left">Highway Type</th>
+                        <th class="py-2 px-3">Weight</th>
+                    </tr></thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800"><td class="py-2 px-3">motorway</td><td class="py-2 px-3 text-center font-mono">8.0</td><td class="py-2 px-3">secondary</td><td class="py-2 px-3 text-center font-mono">3.0</td></tr>
+                        <tr class="border-b border-slate-800"><td class="py-2 px-3">trunk</td><td class="py-2 px-3 text-center font-mono">6.0</td><td class="py-2 px-3">tertiary</td><td class="py-2 px-3 text-center font-mono">2.0</td></tr>
+                        <tr class="border-b border-slate-800"><td class="py-2 px-3">primary</td><td class="py-2 px-3 text-center font-mono">5.0</td><td class="py-2 px-3">residential</td><td class="py-2 px-3 text-center font-mono">0.8</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Normalization to [0, 1] via log1p with 99th percentile clipping:</p>
+                $$\text{road}_{\text{norm}}(i, j) = \text{clip}\left(\frac{\log(1 + \text{road}_{\text{raw}}(i, j))}{\log(1 + P_{99})},\; 0,\; 1\right)$$
+                <p class="text-sm text-slate-400 mt-3">where $P_{99}$ is the 99th percentile of $\log(1 + \text{road}_{\text{raw}})$ over all non-zero land pixels.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.3 Counterfactual Road Modification</h3>
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">To simulate a highway traffic reduction of $\alpha \in [-1, 1]$:</p>
+                $$\text{road}_{\text{new}} = \text{clip}\left(\text{road}_{\text{total}} - \alpha \cdot \text{road}_{\text{highway}},\; 0,\; \infty\right)$$
+                $$\text{tensor}_{\text{new}} = \text{clip}\left(\frac{\log(1 + \text{road}_{\text{new}})}{\log(1 + P_{99})},\; 0,\; 1\right)$$
+                <p class="text-sm text-slate-400 mt-3">This replaces channel 13 (road density) in the 19-channel input tensor before running the flow ODE.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.4 Loss Function</h3>
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Land-weighted flow matching loss with ocean penalty:</p>
+                $$\mathcal{L} = \frac{\sum_{i \in \text{land}} \|v_\theta - v^*\|_i^2}{|\text{land}|} + 0.1 \cdot \frac{\sum_{i \in \text{ocean}} \|v_\theta - v^*\|_i^2}{|\text{ocean}|}$$
+                <p class="text-sm text-slate-400 mt-3">Ocean weight = 0.1 prevents coastline artifacts. Denominator clamped to min=1.0 to avoid DDP deadlock from disconnected gradients.</p>
+            </div>
+        </section>
+
+        <!-- 4. Training -->
+        <section id="training" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400 text-sm">4</span>
+                Training on LUMI Supercomputer
+            </h2>
+
+            <div class="glass rounded-xl p-6 mb-8">
+                <h4 class="font-semibold mb-4">Infrastructure</h4>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">System</span><span>LUMI (EuroHPC, CSC Finland)</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">GPUs</span><span>128&times; AMD MI250X (16 nodes &times; 8)</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Precision</span><span>bf16-mixed</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Strategy</span><span>PyTorch DDP</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Optimizer</span><span>AdamW (lr=5e-5, wd=0.05)</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Scheduler</span><span>Linear warmup 10K steps + cosine decay</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">EMA decay</span><span>0.9999</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Epochs</span><span>300 (2,200 steps/epoch)</span></div>
+                </div>
+            </div>
+
+            <div class="glass rounded-xl p-6">
+                <h4 class="font-semibold mb-4">Known Hardware Issues (AMD MI250X / ROCm)</h4>
+                <div class="space-y-3 text-sm text-slate-400">
+                    <div class="flex gap-3">
+                        <span class="text-red-400 shrink-0">BUG</span>
+                        <span><strong class="text-slate-300">MIOpen Conv2d</strong>: Produces ~1e27 values for patch_embed (kernel=8, stride=8). Fix: F.unfold + nn.Linear.</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-red-400 shrink-0">BUG</span>
+                        <span><strong class="text-slate-300">bf16 overflow</strong>: Q@K^T overflows before scaling. Fix: pre-scale queries (Q*scale)@K^T.</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-red-400 shrink-0">BUG</span>
+                        <span><strong class="text-slate-300">DDP deadlock</strong>: Masked loss returning disconnected tensor. Fix: clamp denominator to min=1.0.</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-yellow-400 shrink-0">TIP</span>
+                        <span><strong class="text-slate-300">MIOpen cache</strong>: /tmp is node-local on LUMI. Use srun --ntasks-per-node=1 to create dirs on ALL nodes.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="py-8 border-t border-slate-800/50 text-center text-sm text-slate-500">
+        <p>ARIA-Flow Documentation &mdash; &copy; 2026</p>
+    </footer>
+
+</body>
+</html>

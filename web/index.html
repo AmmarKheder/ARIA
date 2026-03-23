@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIA-Flow — Generative Digital Twin for Global Air Quality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .glow { box-shadow: 0 0 60px rgba(99, 102, 241, 0.15); }
+        .hero-grid {
+            background-image: radial-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .float { animation: float 6s ease-in-out infinite; }
+        .channel-pill { transition: all 0.3s; }
+        .channel-pill:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">A</div>
+                <span class="text-lg font-semibold">ARIA-Flow</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm text-slate-400">
+                <a href="#architecture" class="hover:text-white transition">Architecture</a>
+                <a href="#data" class="hover:text-white transition">Data</a>
+                <a href="#counterfactual" class="hover:text-white transition">Urban Simulator</a>
+                <a href="documentation.html" class="hover:text-white transition">Documentation</a>
+                <a href="https://huggingface.co/spaces/aria-flow" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition">Try Demo</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="relative min-h-screen flex items-center hero-grid overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-transparent to-slate-950"></div>
+        <div class="absolute top-20 right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 left-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl"></div>
+
+        <div class="relative max-w-7xl mx-auto px-6 pt-32 pb-20">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs text-slate-400 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        Pre-training on LUMI Supercomputer — 128 MI250X GPUs
+                    </div>
+                    <h1 class="text-5xl lg:text-6xl font-800 leading-tight mb-6">
+                        <span class="gradient-text">ARIA-Flow</span><br>
+                        <span class="text-white">The First Generative AI Digital Twin for Urban Air Quality</span>
+                    </h1>
+                    <p class="text-xl text-slate-400 mb-8 leading-relaxed">
+                        Conditional Flow Matching meets Atmospheric Physics at <strong class="text-white">1-km global resolution</strong>.
+                        From satellite reanalysis to street-level PM2.5 — a generative model that learns the causal link between infrastructure and pollution.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://huggingface.co/spaces/aria-flow" class="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white font-medium transition shadow-lg shadow-indigo-500/25">
+                            Try the Interactive Simulator
+                        </a>
+                        <a href="#architecture" class="px-8 py-4 glass rounded-xl hover:bg-slate-800/50 transition">
+                            Read the Paper
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative float">
+                    <div class="glass rounded-2xl p-6 glow">
+                        <div class="text-xs text-slate-500 mb-3 font-mono">ARIA-Flow inference — Beijing, China</div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                                <div class="text-xs text-slate-500 mb-1">CAMS Input (40 km)</div>
+                                <div class="h-32 bg-gradient-to-br from-yellow-900/30 to-red-900/30 rounded flex items-center justify-center text-4xl">🌫️</div>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center">
+                                <div class="text-xs text-slate-500 mb-1">ARIA-Flow Output (1 km)</div>
+                                <div class="h-32 bg-gradient-to-br from-blue-900/30 to-purple-900/30 rounded flex items-center justify-center text-4xl">🏙️</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex justify-between text-xs text-slate-500">
+                            <span>40x super-resolution</span>
+                            <span>107.7M parameters</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats bar -->
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="glass rounded-xl p-5 text-center">
+                    <div class="text-3xl font-bold text-white">107.7M</div>
+                    <div class="text-xs text-slate-500 mt-1">Parameters</div>
+                </div>
+                <div class="glass rounded-xl p-5 text-center">
+                    <div class="text-3xl font-bold text-white">1 km</div>
+                    <div class="text-xs text-slate-500 mt-1">Global Resolution</div>
+                </div>
+                <div class="glass rounded-xl p-5 text-center">
+                    <div class="text-3xl font-bold text-white">12,416</div>
+                    <div class="text-xs text-slate-500 mt-1">Validation Stations</div>
+                </div>
+                <div class="glass rounded-xl p-5 text-center">
+                    <div class="text-3xl font-bold text-white">6</div>
+                    <div class="text-xs text-slate-500 mt-1">Years of Training Data</div>
+                </div>
+                <div class="glass rounded-xl p-5 text-center">
+                    <div class="text-3xl font-bold text-white">128</div>
+                    <div class="text-xs text-slate-500 mt-1">MI250X GPUs (LUMI)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section id="architecture" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Architecture</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                    A dual-branch Vision Transformer with Conditional Flow Matching —
+                    the model learns straight-line ODE paths from noise to PM2.5 fields.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Global Branch -->
+                <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 text-2xl mb-4">🌍</div>
+                    <h3 class="text-xl font-semibold mb-3">Global Branch</h3>
+                    <p class="text-slate-400 text-sm mb-4">ERA5 meteorology (30ch) + CAMS chemistry (6ch) at 0.25° resolution. Patch size 8, 735 tokens.</p>
+                    <div class="space-y-2 text-xs font-mono text-slate-500">
+                        <div class="flex justify-between"><span>Embed dim</span><span class="text-slate-300">768</span></div>
+                        <div class="flex justify-between"><span>Depth</span><span class="text-slate-300">8 blocks</span></div>
+                        <div class="flex justify-between"><span>Heads</span><span class="text-slate-300">12</span></div>
+                        <div class="flex justify-between"><span>Input</span><span class="text-slate-300">72ch × 168 × 280</span></div>
+                    </div>
+                </div>
+
+                <!-- Local Branch -->
+                <div class="glass rounded-2xl p-8 hover:border-purple-500/30 transition">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-2xl mb-4">🔬</div>
+                    <h3 class="text-xl font-semibold mb-3">Local Branch (Flow)</h3>
+                    <p class="text-slate-400 text-sm mb-4">19 proxy channels + noisy state x<sub>t</sub> at 0.01° (1 km). AdaLN-Zero time conditioning. Topology-aware attention with elevation bias.</p>
+                    <div class="space-y-2 text-xs font-mono text-slate-500">
+                        <div class="flex justify-between"><span>Embed dim</span><span class="text-slate-300">512</span></div>
+                        <div class="flex justify-between"><span>Depth</span><span class="text-slate-300">6 blocks (1 Topo + 5 AdaLN)</span></div>
+                        <div class="flex justify-between"><span>Heads</span><span class="text-slate-300">8</span></div>
+                        <div class="flex justify-between"><span>Patch size</span><span class="text-slate-300">16 → 1024 tokens</span></div>
+                    </div>
+                </div>
+
+                <!-- Cross-Attention & Decoder -->
+                <div class="glass rounded-2xl p-8 hover:border-pink-500/30 transition">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400 text-2xl mb-4">🔗</div>
+                    <h3 class="text-xl font-semibold mb-3">Bridge & Decoder</h3>
+                    <p class="text-slate-400 text-sm mb-4">Cross-attention fuses global weather context into local tokens. CNN decoder progressively upsamples 32→512 with skip connections.</p>
+                    <div class="space-y-2 text-xs font-mono text-slate-500">
+                        <div class="flex justify-between"><span>Cross layers</span><span class="text-slate-300">2</span></div>
+                        <div class="flex justify-between"><span>Cross heads</span><span class="text-slate-300">8</span></div>
+                        <div class="flex justify-between"><span>Decoder stages</span><span class="text-slate-300">5 (32→512)</span></div>
+                        <div class="flex justify-between"><span>Output</span><span class="text-slate-300">v<sub>t</sub> (1, 512, 512)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow Matching explanation -->
+            <div class="mt-12 glass rounded-2xl p-10 glow">
+                <h3 class="text-2xl font-semibold mb-6 text-center">Conditional Flow Matching</h3>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl mb-3">🎲</div>
+                        <h4 class="font-semibold mb-2">Linear ODE Path</h4>
+                        <p class="text-sm text-slate-400">x<sub>t</sub> = (1-t)x<sub>0</sub> + t&middot;x<sub>1</sub> — straight paths from Gaussian noise to PM2.5 target. No complex diffusion schedules.</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl mb-3">🧠</div>
+                        <h4 class="font-semibold mb-2">Velocity Prediction</h4>
+                        <p class="text-sm text-slate-400">The model predicts v<sub>&theta;</sub> &asymp; x<sub>1</sub> - x<sub>0</sub>, the velocity field that transports noise to clean PM2.5. AdaLN-Zero conditions on time t.</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl mb-3">⚡</div>
+                        <h4 class="font-semibold mb-2">Fast Inference</h4>
+                        <p class="text-sm text-slate-400">Only 20 Euler ODE steps at inference — 5x faster than diffusion models. Ensemble sampling for uncertainty quantification.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Section -->
+    <section id="data" class="py-32 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">19-Channel Input Tensor</h2>
+                <p class="text-slate-400 text-lg">Every 512&times;512 km patch ingests 19 channels of multi-source geospatial data at 1 km resolution</p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 mb-16">
+                <div class="channel-pill glass rounded-full px-5 py-3 text-sm">
+                    <span class="text-blue-400 font-semibold">CAMS<sub>t</sub></span>
+                    <span class="text-slate-500 ml-2">6ch — PM2.5, PM10, NO2, O3, SO2, CO</span>
+                </div>
+                <div class="channel-pill glass rounded-full px-5 py-3 text-sm">
+                    <span class="text-blue-300 font-semibold">CAMS<sub>t-1</sub></span>
+                    <span class="text-slate-500 ml-2">6ch — Previous day chemistry</span>
+                </div>
+                <div class="channel-pill glass rounded-full px-5 py-3 text-sm">
+                    <span class="text-green-400 font-semibold">Elevation</span>
+                    <span class="text-slate-500 ml-2">1ch — GMTED2010 at 250m</span>
+                </div>
+                <div class="channel-pill glass rounded-full px-5 py-3 text-sm">
+                    <span class="text-orange-400 font-semibold">Road Density</span>
+                    <span class="text-slate-500 ml-2">1ch — OSM weighted roads</span>
+                </div>
+                <div class="channel-pill glass rounded-full px-5 py-3 text-sm">
+                    <span class="text-yellow-400 font-semibold">Nighttime Lights</span>
+                    <span class="text-slate-500 ml-2">1ch — VIIRS 2022</span>
+                </div>
+                <div class="channel-pill glass rounded-full px-5 py-3 text-sm">
+                    <span class="text-red-400 font-semibold">Population</span>
+                    <span class="text-slate-500 ml-2">1ch — WorldPop 2020</span>
+                </div>
+                <div class="channel-pill glass rounded-full px-5 py-3 text-sm">
+                    <span class="text-slate-300 font-semibold">Lat / Lon</span>
+                    <span class="text-slate-500 ml-2">2ch — Positional encoding</span>
+                </div>
+            </div>
+
+            <!-- Data sources grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass rounded-xl p-6">
+                    <h4 class="font-semibold text-sm text-indigo-400 mb-1">Target</h4>
+                    <h3 class="text-lg font-bold mb-2">GHAP D1K</h3>
+                    <p class="text-xs text-slate-400">GlobalHighPM2.5 daily at 1 km. 18,000&times;36,000 grid. 6 years (2017-2022) from Zenodo.</p>
+                    <div class="mt-3 text-xs text-slate-500 font-mono">~60 GB/year compressed</div>
+                </div>
+                <div class="glass rounded-xl p-6">
+                    <h4 class="font-semibold text-sm text-blue-400 mb-1">Meteorology</h4>
+                    <h3 class="text-lg font-bold mb-2">ERA5 Reanalysis</h3>
+                    <p class="text-xs text-slate-400">30 channels (5 surface + 25 pressure levels) at 0.25° daily. From ECMWF Copernicus.</p>
+                    <div class="mt-3 text-xs text-slate-500 font-mono">721&times;1440 global grid</div>
+                </div>
+                <div class="glass rounded-xl p-6">
+                    <h4 class="font-semibold text-sm text-green-400 mb-1">Chemistry</h4>
+                    <h3 class="text-lg font-bold mb-2">CAMS Reanalysis</h3>
+                    <p class="text-xs text-slate-400">6 pollutants (PM2.5, PM10, NO2, O3, SO2, CO) at 0.75°. Assimilates Sentinel-5P TROPOMI.</p>
+                    <div class="mt-3 text-xs text-slate-500 font-mono">241&times;480 per pollutant</div>
+                </div>
+                <div class="glass rounded-xl p-6">
+                    <h4 class="font-semibold text-sm text-orange-400 mb-1">Emission Proxy</h4>
+                    <h3 class="text-lg font-bold mb-2">OSM Road Density</h3>
+                    <p class="text-xs text-slate-400">OpenStreetMap roads weighted by type (motorway=8.0, residential=0.8). Microsoft Road Detections gap-fill. log1p/p99 normalized.</p>
+                    <div class="mt-3 text-xs text-slate-500 font-mono">18,000&times;36,000 static</div>
+                </div>
+            </div>
+
+            <!-- Training pipeline -->
+            <div class="mt-16 glass rounded-2xl p-10">
+                <h3 class="text-2xl font-semibold mb-8 text-center">Three-Stage Training Pipeline</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 flex items-center justify-center text-3xl mb-4">1</div>
+                        <h4 class="font-semibold mb-2">Pre-train</h4>
+                        <p class="text-sm text-slate-400">GHAP 2017-2022 global daily PM2.5 at 1 km. 128 MI250X GPUs on LUMI. Flow Matching loss + ocean penalty.</p>
+                        <div class="mt-2 text-xs font-mono text-indigo-400">~2,200 patches/epoch &times; 300 epochs</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-purple-500/10 flex items-center justify-center text-3xl mb-4">2</div>
+                        <h4 class="font-semibold mb-2">Fine-tune</h4>
+                        <p class="text-sm text-slate-400">OpenAQ + CNEMC 2023-2024 ground truth. 25K+ global stations. Adapts the model to real sensor measurements.</p>
+                        <div class="mt-2 text-xs font-mono text-purple-400">Station-guided loss</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-pink-500/10 flex items-center justify-center text-3xl mb-4">3</div>
+                        <h4 class="font-semibold mb-2">Zero-Shot Test</h4>
+                        <p class="text-sm text-slate-400">OpenAQ + CNEMC 2025 (12K+ stations). No retraining — pure generalization to unseen year and stations.</p>
+                        <div class="mt-2 text-xs font-mono text-pink-400">107M+ measurements</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Counterfactual -->
+    <section id="counterfactual" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 text-xs font-medium mb-4">
+                        Killer Feature
+                    </div>
+                    <h2 class="text-4xl font-bold mb-6">Counterfactual Urban Inference</h2>
+                    <p class="text-lg text-slate-400 mb-6 leading-relaxed">
+                        Draw a new road. Erase a highway. Watch the atmosphere react in real-time.
+                    </p>
+                    <p class="text-slate-400 mb-8">
+                        ARIA-Flow learns the <strong class="text-white">causal physics</strong> between high-resolution infrastructure and atmospheric chemistry.
+                        Urban planners can test What-If emission scenarios by modifying the road density tensor
+                        and observing the downstream PM2.5 response through the flow matching ODE.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-sm shrink-0 mt-0.5">1</div>
+                            <div>
+                                <h4 class="font-medium text-sm">Modify Road Density</h4>
+                                <p class="text-xs text-slate-500">Adjust highway traffic by -100% to +100%. The OSM-weighted road tensor updates in real-time.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 text-sm shrink-0 mt-0.5">2</div>
+                            <div>
+                                <h4 class="font-medium text-sm">Re-normalize</h4>
+                                <p class="text-xs text-slate-500">raw_new = clip(grid_total - grid_highway &times; &alpha;) &rarr; log1p(raw_new) / log1p(p99)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-400 text-sm shrink-0 mt-0.5">3</div>
+                            <div>
+                                <h4 class="font-medium text-sm">Run ODE</h4>
+                                <p class="text-xs text-slate-500">20 Euler steps through the learned velocity field &rarr; new PM2.5 map reflecting the counterfactual scenario.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass rounded-2xl p-8 glow">
+                    <div class="text-xs text-slate-500 mb-4 font-mono">What-If Simulator &mdash; Beijing Inner Ring</div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                            <div class="text-xs text-slate-500 mb-2">Baseline (current roads)</div>
+                            <div class="h-40 rounded bg-gradient-to-br from-red-900/40 via-orange-900/30 to-yellow-900/20 flex items-center justify-center">
+                                <span class="text-3xl font-bold text-red-400/80">85 &mu;g/m&sup3;</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                            <div class="text-xs text-slate-500 mb-2">Scenario (-50% highway)</div>
+                            <div class="h-40 rounded bg-gradient-to-br from-green-900/40 via-teal-900/30 to-blue-900/20 flex items-center justify-center">
+                                <span class="text-3xl font-bold text-green-400/80">62 &mu;g/m&sup3;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs text-slate-500">
+                        <span>-100%</span>
+                        <div class="flex-1 h-2 bg-slate-800 rounded-full relative">
+                            <div class="absolute left-1/4 top-0 w-3 h-3 -mt-0.5 rounded-full bg-indigo-500 shadow-lg shadow-indigo-500/50"></div>
+                        </div>
+                        <span>+100%</span>
+                    </div>
+                    <div class="text-center text-xs text-slate-500 mt-2">Highway Traffic Modification</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compute -->
+    <section class="py-24 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="glass rounded-2xl p-10 text-center">
+                <h3 class="text-2xl font-bold mb-2">Trained on LUMI</h3>
+                <p class="text-slate-400 mb-8">Europe's most powerful supercomputer — EuroHPC, CSC Finland</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div>
+                        <div class="text-3xl font-bold text-white">16</div>
+                        <div class="text-xs text-slate-500">Nodes</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-white">128</div>
+                        <div class="text-xs text-slate-500">AMD MI250X GPUs</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-white">bf16</div>
+                        <div class="text-xs text-slate-500">Mixed Precision</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-white">DDP</div>
+                        <div class="text-xs text-slate-500">Distributed Training</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500">
+            <p>&copy; 2026 ARIA-Flow &mdash; Conditional Flow Matching for Global Air Quality</p>
+            <p class="mt-2">Pre-trained on LUMI (EuroHPC) &bull; GHAP &bull; ERA5 &bull; CAMS &bull; OpenStreetMap</p>
+        </div>
+    </footer>
+
+</body>
+</html>
