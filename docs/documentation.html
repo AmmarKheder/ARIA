@@ -1,532 +1,287 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARIA Documentation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>ARIA-Flow — Technical Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #0f4c75;
-            --accent: #1b98e0;
-            --dark: #0a0a0a;
-            --dark2: #111827;
-            --gray: #6b7280;
-            --border: #e5e7eb;
-            --bg: #f8fafc;
-            --shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #1f2937; line-height: 1.75; }
-
-        /* Layout */
-        .layout { display: flex; min-height: 100vh; }
-
-        /* Sidebar */
-        .sidebar {
-            width: 260px; flex-shrink: 0;
-            background: white; border-right: 1px solid var(--border);
-            position: fixed; top: 0; left: 0; height: 100vh;
-            overflow-y: auto; padding: 0 0 40px;
-        }
-        .sidebar-header {
-            padding: 20px 24px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .sidebar-logo { font-size: 1.1rem; font-weight: 800; color: var(--dark); text-decoration: none; }
-        .sidebar-logo span { color: var(--accent); }
-        .sidebar-back { font-size: 0.78rem; color: var(--gray); text-decoration: none; display: block; padding: 10px 24px 4px; }
-        .sidebar-back:hover { color: var(--accent); }
-
-        .nav-section { padding: 16px 24px 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); }
-        .nav-item { display: block; padding: 7px 24px; font-size: 0.875rem; color: #374151; text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
-        .nav-item:hover { background: var(--bg); color: var(--accent); border-left-color: var(--accent); }
-        .nav-item.active { background: #eff6ff; color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
-
-        /* Content */
-        .content { margin-left: 260px; padding: 60px 80px; max-width: 900px; }
-
-        h1 { font-size: 2rem; font-weight: 800; color: var(--dark); margin-bottom: 12px; letter-spacing: -0.5px; }
-        h2 { font-size: 1.35rem; font-weight: 700; color: var(--dark); margin: 48px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-        h3 { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin: 28px 0 10px; }
-        p { margin-bottom: 16px; color: #374151; font-size: 0.95rem; }
-        a { color: var(--accent); text-decoration: none; }
-        a:hover { text-decoration: underline; }
-
-        .lead { font-size: 1.05rem; color: var(--gray); margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 32px; }
-
-        /* Code */
-        pre {
-            background: var(--dark2); color: #e2e8f0; border-radius: 10px;
-            padding: 24px; margin: 16px 0 24px; overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.75;
-        }
-        code {
-            font-family: 'JetBrains Mono', monospace; font-size: 0.83em;
-            background: #f1f5f9; color: #0f4c75; padding: 2px 6px; border-radius: 4px;
-        }
-        pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
-        .c-blue { color: #60a5fa; }
-        .c-green { color: #34d399; }
-        .c-yellow { color: #fbbf24; }
-        .c-gray { color: #9ca3af; }
-        .c-red { color: #f87171; }
-        .c-str { color: #a3e635; }
-
-        /* Callouts */
-        .callout {
-            border-radius: 10px; padding: 16px 20px; margin: 20px 0;
-            font-size: 0.9rem; display: flex; gap: 12px; align-items: flex-start;
-        }
-        .callout-info  { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
-        .callout-warn  { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
-        .callout-tip   { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
-        .callout-icon  { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-
-        /* Table */
-        table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 0.88rem; }
-        th { background: white; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--border); }
-        td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: #374151; vertical-align: top; }
-        tr:last-child td { border-bottom: none; }
-        code.tag { background: #dbeafe; color: #1e40af; }
-
-        /* Steps */
-        .steps { counter-reset: step; }
-        .step { display: flex; gap: 18px; margin-bottom: 28px; }
-        .step-num {
-            counter-increment: step;
-            width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-            background: var(--accent); color: white; font-weight: 700; font-size: 0.85rem;
-            display: flex; align-items: center; justify-content: center; margin-top: 2px;
-        }
-        .step-content h3 { margin-top: 0; }
-
-        /* Section anchor */
-        section { padding-top: 24px; }
-        section:first-of-type { padding-top: 0; }
-
-        @media (max-width: 900px) {
-            .sidebar { display: none; }
-            .content { margin-left: 0; padding: 32px 24px; }
-        }
+        body { font-family: 'Inter', sans-serif; }
+        code, .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(148, 163, 184, 0.1); }
+        .gradient-text { background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .eq-box { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 1.5rem; overflow-x: auto; }
     </style>
 </head>
-<body>
-<div class="layout">
+<body class="bg-slate-950 text-slate-200">
 
-<!-- Sidebar -->
-<aside class="sidebar">
-    <div class="sidebar-header">
-        <a class="sidebar-logo" href="index.html"><span>ARIA</span> Docs</a>
-    </div>
-    <a class="sidebar-back" href="index.html">← Back to website</a>
-
-    <div class="nav-section">Getting Started</div>
-    <a class="nav-item active" href="#introduction">Introduction</a>
-    <a class="nav-item" href="#installation">Installation</a>
-    <a class="nav-item" href="#quickstart">Quickstart</a>
-
-    <div class="nav-section">Data</div>
-    <a class="nav-item" href="#input-data">Input Data</a>
-    <a class="nav-item" href="#download-data">Downloading Data</a>
-    <a class="nav-item" href="#data-format">Data Format</a>
-
-    <div class="nav-section">Model</div>
-    <a class="nav-item" href="#architecture">Architecture</a>
-    <a class="nav-item" href="#inference">Inference</a>
-    <a class="nav-item" href="#config">Configuration</a>
-
-    <div class="nav-section">Training</div>
-    <a class="nav-item" href="#training">Training</a>
-    <a class="nav-item" href="#slurm">SLURM / HPC</a>
-    <a class="nav-item" href="#checkpoints">Checkpoints</a>
-
-    <div class="nav-section">Reference</div>
-    <a class="nav-item" href="#api">Python API</a>
-    <a class="nav-item" href="#faq">FAQ</a>
-</aside>
-
-<!-- Main content -->
-<main class="content">
-
-    <h1>ARIA Documentation</h1>
-    <p class="lead">
-        ARIA (Attention-based Resolution-Integrated Air quality) is a global PM₂.₅ forecasting model
-        at 1km resolution, built on a dual-branch Vision Transformer with cross-attention.
-    </p>
-
-    <!-- Introduction -->
-    <section id="introduction">
-        <h2>Introduction</h2>
-        <p>
-            ARIA takes ERA5 meteorological reanalysis and CAMS chemistry forecasts as inputs,
-            combines them with static emission proxies (roads, nighttime lights, population),
-            and predicts PM₂.₅ concentration at ~1km resolution anywhere on Earth.
-        </p>
-        <p>
-            The model operates on 512×512 pixel tiles and can be tiled to cover any region.
-            It predicts a <em>delta</em> on top of the CAMS background: <code>pred = CAMS_t + decoder(tokens)</code>,
-            which guarantees physically grounded predictions even at initialization.
-        </p>
-        <div class="callout callout-info">
-            <span class="callout-icon">ℹ️</span>
-            <span>ARIA is currently training on 128 MI250X GPUs. Checkpoints will be published on
-            <a href="https://huggingface.co/AmmarKheder/ARIA-global" target="_blank">HuggingFace</a>
-            when training completes.</span>
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">A</div>
+                <span class="text-lg font-semibold">ARIA-Flow <span class="text-slate-500 font-normal">/ Docs</span></span>
+            </a>
+            <div class="hidden md:flex gap-6 text-sm text-slate-400">
+                <a href="#flow-matching" class="hover:text-white transition">Flow Matching</a>
+                <a href="#architecture" class="hover:text-white transition">Architecture</a>
+                <a href="#data" class="hover:text-white transition">Data Processing</a>
+                <a href="#training" class="hover:text-white transition">Training</a>
+            </div>
         </div>
-    </section>
+    </nav>
 
-    <!-- Installation -->
-    <section id="installation">
-        <h2>Installation</h2>
-        <pre><code><span class="c-gray"># Clone the repository</span>
-git clone https://github.com/AmmarKheder/ARIA.git
-cd ARIA
+    <main class="max-w-5xl mx-auto px-6 pt-28 pb-20">
 
-<span class="c-gray"># Create a virtual environment</span>
-python -m venv venv
-source venv/bin/activate      <span class="c-gray"># Linux / macOS</span>
-venv\Scripts\activate         <span class="c-gray"># Windows</span>
+        <!-- Title -->
+        <div class="mb-16">
+            <h1 class="text-4xl font-bold mb-4"><span class="gradient-text">ARIA-Flow</span> Technical Documentation</h1>
+            <p class="text-lg text-slate-400">Conditional Flow Matching for Global High-Resolution Air Quality Estimation</p>
+        </div>
 
-<span class="c-gray"># Install dependencies</span>
-pip install -r requirements.txt</code></pre>
+        <!-- 1. Flow Matching -->
+        <section id="flow-matching" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-sm">1</span>
+                Conditional Flow Matching
+            </h2>
 
-        <h3>Requirements</h3>
-        <table>
-            <thead><tr><th>Package</th><th>Version</th><th>Purpose</th></tr></thead>
-            <tbody>
-                <tr><td><code>torch</code></td><td>≥ 2.0</td><td>Model backbone</td></tr>
-                <tr><td><code>pytorch-lightning</code></td><td>≥ 2.0</td><td>Training loop</td></tr>
-                <tr><td><code>zarr</code></td><td>≥ 2.16</td><td>Data storage</td></tr>
-                <tr><td><code>numpy</code></td><td>≥ 1.24</td><td>Numerics</td></tr>
-                <tr><td><code>xarray</code></td><td>≥ 2023.1</td><td>NetCDF handling</td></tr>
-                <tr><td><code>cdsapi</code></td><td>≥ 0.6</td><td>Copernicus data download</td></tr>
-                <tr><td><code>numcodecs</code></td><td>≥ 0.11</td><td>Zarr compression</td></tr>
-            </tbody>
-        </table>
-    </section>
+            <p class="text-slate-400 mb-6">
+                ARIA-Flow uses Conditional Flow Matching (CFM) instead of score-based diffusion.
+                CFM defines a probability path between a base distribution $p_0 = \mathcal{N}(0, I)$ and the target PM2.5 distribution $p_1$
+                via a simple linear interpolation.
+            </p>
 
-    <!-- Quickstart -->
-    <section id="quickstart">
-        <h2>Quickstart</h2>
-        <div class="steps">
-            <div class="step">
-                <div class="step-num">1</div>
-                <div class="step-content">
-                    <h3>Download input data</h3>
-                    <p>You need ERA5 and CAMS for your target date (and the day before).</p>
-                    <pre><code>pip install cdsapi
-python -c <span class="c-str">"
-import cdsapi
-c = cdsapi.Client()
-c.retrieve('reanalysis-era5-single-levels', {
-    'variable': ['10m_u_component_of_wind', '10m_v_component_of_wind',
-                 '2m_temperature', 'mean_sea_level_pressure', 'surface_pressure'],
-    'year': '2023', 'month': '06', 'day': '01',
-    'time': ['00:00','06:00','12:00','18:00'],
-    'area': [55, 70, 15, 145],  # N, W, S, E (East Asia)
-    'data_format': 'netcdf',
-}, 'era5_surface.nc')
-"</span></code></pre>
-                    <div class="callout callout-tip">
-                        <span class="callout-icon">💡</span>
-                        <span>Use the <strong>Download Code</strong> tab on the
-                        <a href="https://ammarkheder-aria.hf.space" target="_blank">live demo</a>
-                        to generate a complete download script for any region and date.</span>
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Linear interpolant path:</p>
+                $$x_t = (1 - t)\, x_0 + t \cdot x_1, \quad t \in [0, 1]$$
+                <p class="text-sm text-slate-400 mt-3">where $x_0 \sim \mathcal{N}(0, I)$ is Gaussian noise and $x_1$ is the target PM2.5 field (log1p normalized).</p>
+            </div>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">The target velocity field is constant along each path:</p>
+                $$v^*(x_t, t) = x_1 - x_0$$
+                <p class="text-sm text-slate-400 mt-3">The model learns $v_\theta(x_t, t, \text{cond}) \approx x_1 - x_0$ with MSE loss:</p>
+                $$\mathcal{L}_{\text{FM}} = \mathbb{E}_{t, x_0, x_1} \left[ \| v_\theta(x_t, t, \text{cond}) - (x_1 - x_0) \|^2 \right]$$
+            </div>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">At inference, we solve the ODE from $x_0 \sim \mathcal{N}(0, I)$ using $N=20$ Euler steps:</p>
+                $$x_{t+\Delta t} = x_t + \Delta t \cdot v_\theta(x_t, t, \text{cond}), \quad \Delta t = \frac{1}{N}$$
+            </div>
+
+            <div class="glass rounded-xl p-6 mt-6">
+                <h4 class="font-semibold text-sm mb-3 text-indigo-400">Why Flow Matching over Diffusion?</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> Straight ODE paths = only 20 steps vs 100+ for DDPM</li>
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> No noise schedule to tune (vs $\beta_t$ in diffusion)</li>
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> Stable training — MSE on velocity, no variance explosion</li>
+                    <li class="flex gap-2"><span class="text-indigo-400">&#10003;</span> Natural ensemble sampling: run N independent ODE trajectories for uncertainty</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2. Architecture -->
+        <section id="architecture" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 text-sm">2</span>
+                Model Architecture (107.7M Parameters)
+            </h2>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.1 AdaLN-Zero Time Conditioning</h3>
+            <p class="text-slate-400 mb-4">
+                The flow time $t \in [0,1]$ is embedded via sinusoidal positional encoding (256 frequencies) and projected through an MLP.
+                Each transformer block in the local branch uses Adaptive Layer Normalization with zero initialization (AdaLN-Zero) for conditioning:
+            </p>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Time embedding:</p>
+                $$c = \text{MLP}\left(\left[\sin(t \cdot 1000 \cdot \omega_k),\; \cos(t \cdot 1000 \cdot \omega_k),\; \tau_{\text{lead}}\right]\right) \in \mathbb{R}^{512}$$
+                <p class="text-sm text-slate-400 mt-4 mb-3">AdaLN-Zero modulation (6 parameters per block):</p>
+                $$(\gamma_1, \beta_1, \alpha_1, \gamma_2, \beta_2, \alpha_2) = \text{SiLU}(\text{Linear}(c))$$
+                $$h = x + \alpha_1 \cdot \text{Attn}\left(\text{LN}(x) \cdot (1 + \gamma_1) + \beta_1\right)$$
+                $$\text{out} = h + \alpha_2 \cdot \text{MLP}\left(\text{LN}(h) \cdot (1 + \gamma_2) + \beta_2\right)$$
+                <p class="text-sm text-slate-400 mt-3">All modulation weights initialized to zero &rarr; $\alpha_i = 0$ at init &rarr; each block is an identity function at initialization.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.2 Topology-Aware Attention (Block 0)</h3>
+            <p class="text-slate-400 mb-4">
+                The first block of the local branch uses elevation-informed attention with relative position bias:
+            </p>
+            <div class="eq-box mb-6">
+                $$\text{Attn}(Q, K, V) = \text{softmax}\left(\frac{Q \cdot K^T}{\sqrt{d}} + B_{\text{elev}} + B_{\text{pos}}\right) V$$
+                <p class="text-sm text-slate-400 mt-3">Pre-scaling: $(Q \cdot \text{scale}) \times K^T$ to prevent bf16 overflow in the matmul.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.3 Patch Embedding (MIOpen Bug Workaround)</h3>
+            <p class="text-slate-400 mb-4">
+                Due to a verified MIOpen Conv2d bug on AMD MI250X GPUs that produces corrupted outputs (~1e27 values), patch embedding uses <code class="text-indigo-400 bg-slate-800 px-2 py-0.5 rounded">F.unfold + nn.Linear</code> instead of <code class="text-slate-500 bg-slate-800 px-2 py-0.5 rounded line-through">nn.Conv2d</code>:
+            </p>
+            <div class="eq-box mb-6">
+                <pre class="text-sm text-slate-300 font-mono">
+# Instead of nn.Conv2d(19, 512, kernel_size=16, stride=16)
+patches = F.unfold(x, kernel_size=16, stride=16)  # (B, 19*16*16, 1024)
+tokens = self.proj(patches.transpose(1, 2))        # (B, 1024, 512)</pre>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">2.4 Full Architecture Summary</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-slate-400">
+                            <th class="py-3 px-4 text-left">Component</th>
+                            <th class="py-3 px-4 text-left">Input</th>
+                            <th class="py-3 px-4 text-left">Output</th>
+                            <th class="py-3 px-4 text-left">Config</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">TimeEmbedder</td>
+                            <td class="py-3 px-4 mono text-xs">t &in; [0,1], lead_time</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 512)</td>
+                            <td class="py-3 px-4 text-xs">256 freq + MLP</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">GlobalBranch</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 72, 168, 280)</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 735, 768)</td>
+                            <td class="py-3 px-4 text-xs">d=768, depth=8, heads=12</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">LocalBranchFlow</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 19, 512, 512) + t_emb</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 1024, 512) + skip</td>
+                            <td class="py-3 px-4 text-xs">d=512, depth=6, heads=8</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">CrossAttention</td>
+                            <td class="py-3 px-4 mono text-xs">local Q, global K/V</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 1024, 512)</td>
+                            <td class="py-3 px-4 text-xs">2 layers, 8 heads</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium">CNN Decoder</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 512, 32, 32) + skip</td>
+                            <td class="py-3 px-4 mono text-xs">(B, 1, 512, 512)</td>
+                            <td class="py-3 px-4 text-xs">5 stages, bilinear upsample</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. Data Processing -->
+        <section id="data" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 text-sm">3</span>
+                Data Processing
+            </h2>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.1 Target Normalization (GHAP PM2.5)</h3>
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Log1p transform with fixed global statistics:</p>
+                $$\hat{y} = \frac{\log(1 + y) - \mu}{\sigma}, \quad \mu = 2.416, \; \sigma = 0.800$$
+                <p class="text-sm text-slate-400 mt-3">Land mask threshold: $\hat{y} > -\mu/\sigma = -3.02$ (i.e., raw PM2.5 > 0).</p>
+                <p class="text-sm text-red-400/80 mt-2">Critical: using $\hat{y} > 0$ would exclude clean air pixels with raw PM2.5 &lt; 15 &mu;g/m&sup3;.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.2 Road Density Normalization</h3>
+            <p class="text-slate-400 mb-4">
+                Each OSM road segment contributes a weight to the raster grid based on highway type:
+            </p>
+            <div class="overflow-x-auto mb-4">
+                <table class="text-sm w-full">
+                    <thead><tr class="border-b border-slate-700 text-slate-400">
+                        <th class="py-2 px-3 text-left">Highway Type</th>
+                        <th class="py-2 px-3">Weight</th>
+                        <th class="py-2 px-3 text-left">Highway Type</th>
+                        <th class="py-2 px-3">Weight</th>
+                    </tr></thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800"><td class="py-2 px-3">motorway</td><td class="py-2 px-3 text-center font-mono">8.0</td><td class="py-2 px-3">secondary</td><td class="py-2 px-3 text-center font-mono">3.0</td></tr>
+                        <tr class="border-b border-slate-800"><td class="py-2 px-3">trunk</td><td class="py-2 px-3 text-center font-mono">6.0</td><td class="py-2 px-3">tertiary</td><td class="py-2 px-3 text-center font-mono">2.0</td></tr>
+                        <tr class="border-b border-slate-800"><td class="py-2 px-3">primary</td><td class="py-2 px-3 text-center font-mono">5.0</td><td class="py-2 px-3">residential</td><td class="py-2 px-3 text-center font-mono">0.8</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Normalization to [0, 1] via log1p with 99th percentile clipping:</p>
+                $$\text{road}_{\text{norm}}(i, j) = \text{clip}\left(\frac{\log(1 + \text{road}_{\text{raw}}(i, j))}{\log(1 + P_{99})},\; 0,\; 1\right)$$
+                <p class="text-sm text-slate-400 mt-3">where $P_{99}$ is the 99th percentile of $\log(1 + \text{road}_{\text{raw}})$ over all non-zero land pixels.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.3 Counterfactual Road Modification</h3>
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">To simulate a highway traffic reduction of $\alpha \in [-1, 1]$:</p>
+                $$\text{road}_{\text{new}} = \text{clip}\left(\text{road}_{\text{total}} - \alpha \cdot \text{road}_{\text{highway}},\; 0,\; \infty\right)$$
+                $$\text{tensor}_{\text{new}} = \text{clip}\left(\frac{\log(1 + \text{road}_{\text{new}})}{\log(1 + P_{99})},\; 0,\; 1\right)$$
+                <p class="text-sm text-slate-400 mt-3">This replaces channel 13 (road density) in the 19-channel input tensor before running the flow ODE.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-8 mb-4">3.4 Loss Function</h3>
+            <div class="eq-box mb-6">
+                <p class="text-sm text-slate-400 mb-3">Land-weighted flow matching loss with ocean penalty:</p>
+                $$\mathcal{L} = \frac{\sum_{i \in \text{land}} \|v_\theta - v^*\|_i^2}{|\text{land}|} + 0.1 \cdot \frac{\sum_{i \in \text{ocean}} \|v_\theta - v^*\|_i^2}{|\text{ocean}|}$$
+                <p class="text-sm text-slate-400 mt-3">Ocean weight = 0.1 prevents coastline artifacts. Denominator clamped to min=1.0 to avoid DDP deadlock from disconnected gradients.</p>
+            </div>
+        </section>
+
+        <!-- 4. Training -->
+        <section id="training" class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400 text-sm">4</span>
+                Training on LUMI Supercomputer
+            </h2>
+
+            <div class="glass rounded-xl p-6 mb-8">
+                <h4 class="font-semibold mb-4">Infrastructure</h4>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">System</span><span>LUMI (EuroHPC, CSC Finland)</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">GPUs</span><span>128&times; AMD MI250X (16 nodes &times; 8)</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Precision</span><span>bf16-mixed</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Strategy</span><span>PyTorch DDP</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Optimizer</span><span>AdamW (lr=5e-5, wd=0.05)</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Scheduler</span><span>Linear warmup 10K steps + cosine decay</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">EMA decay</span><span>0.9999</span></div>
+                    <div class="flex justify-between border-b border-slate-800 py-2"><span class="text-slate-400">Epochs</span><span>300 (2,200 steps/epoch)</span></div>
+                </div>
+            </div>
+
+            <div class="glass rounded-xl p-6">
+                <h4 class="font-semibold mb-4">Known Hardware Issues (AMD MI250X / ROCm)</h4>
+                <div class="space-y-3 text-sm text-slate-400">
+                    <div class="flex gap-3">
+                        <span class="text-red-400 shrink-0">BUG</span>
+                        <span><strong class="text-slate-300">MIOpen Conv2d</strong>: Produces ~1e27 values for patch_embed (kernel=8, stride=8). Fix: F.unfold + nn.Linear.</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-red-400 shrink-0">BUG</span>
+                        <span><strong class="text-slate-300">bf16 overflow</strong>: Q@K^T overflows before scaling. Fix: pre-scale queries (Q*scale)@K^T.</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-red-400 shrink-0">BUG</span>
+                        <span><strong class="text-slate-300">DDP deadlock</strong>: Masked loss returning disconnected tensor. Fix: clamp denominator to min=1.0.</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-yellow-400 shrink-0">TIP</span>
+                        <span><strong class="text-slate-300">MIOpen cache</strong>: /tmp is node-local on LUMI. Use srun --ntasks-per-node=1 to create dirs on ALL nodes.</span>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="step">
-                <div class="step-num">2</div>
-                <div class="step-content">
-                    <h3>Load the checkpoint</h3>
-                    <pre><code><span class="c-blue">from</span> huggingface_hub <span class="c-blue">import</span> hf_hub_download
-<span class="c-blue">import</span> torch
+    </main>
 
-ckpt_path = hf_hub_download(
-    repo_id=<span class="c-str">"AmmarKheder/ARIA-global"</span>,
-    filename=<span class="c-str">"aria_global.ckpt"</span>
-)
-ckpt = torch.load(ckpt_path, map_location=<span class="c-str">"cpu"</span>)</code></pre>
-                </div>
-            </div>
+    <footer class="py-8 border-t border-slate-800/50 text-center text-sm text-slate-500">
+        <p>ARIA-Flow Documentation &mdash; &copy; 2026</p>
+    </footer>
 
-            <div class="step">
-                <div class="step-num">3</div>
-                <div class="step-content">
-                    <h3>Run inference</h3>
-                    <pre><code><span class="c-blue">from</span> cranpm.training.trainer <span class="c-blue">import</span> CranPMLightning
-
-model = CranPMLightning.load_from_checkpoint(ckpt_path)
-model.eval()
-
-<span class="c-gray"># inputs: dict with 'era5' (B,72,168,280) and 'local' (B,18,512,512)</span>
-<span class="c-blue">with</span> torch.no_grad():
-    pred = model(inputs)  <span class="c-gray"># (B, 1, 512, 512) — PM2.5 in µg/m³</span></code></pre>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Input Data -->
-    <section id="input-data">
-        <h2>Input Data</h2>
-        <table>
-            <thead><tr><th>Branch</th><th>Source</th><th>Channels</th><th>Shape</th></tr></thead>
-            <tbody>
-                <tr><td>Global</td><td>ERA5 surface (t)</td><td>5</td><td>168 × 280</td></tr>
-                <tr><td>Global</td><td>ERA5 pressure (t)</td><td>25</td><td>168 × 280</td></tr>
-                <tr><td>Global</td><td>CAMS (t)</td><td>6</td><td>168 × 280</td></tr>
-                <tr><td>Global</td><td>ERA5 surface (t−1)</td><td>5</td><td>168 × 280</td></tr>
-                <tr><td>Global</td><td>ERA5 pressure (t−1)</td><td>25</td><td>168 × 280</td></tr>
-                <tr><td>Global</td><td>CAMS (t−1)</td><td>6</td><td>168 × 280</td></tr>
-                <tr><td>Local</td><td>CAMS fine (t)</td><td>6</td><td>512 × 512</td></tr>
-                <tr><td>Local</td><td>CAMS fine (t−1)</td><td>6</td><td>512 × 512</td></tr>
-                <tr><td>Local</td><td>Elevation (GMTED2010)</td><td>1</td><td>512 × 512</td></tr>
-                <tr><td>Local</td><td>Road density (GRIP4)</td><td>1</td><td>512 × 512</td></tr>
-                <tr><td>Local</td><td>Nighttime lights (VIIRS)</td><td>1</td><td>512 × 512</td></tr>
-                <tr><td>Local</td><td>Population (WorldPop)</td><td>1</td><td>512 × 512</td></tr>
-                <tr><td>Local</td><td>Latitude / Longitude</td><td>2</td><td>512 × 512</td></tr>
-            </tbody>
-        </table>
-        <div class="callout callout-warn">
-            <span class="callout-icon">⚠️</span>
-            <span>All inputs must be normalized before passing to the model.
-            See <a href="#config">Configuration</a> for normalization constants.</span>
-        </div>
-    </section>
-
-    <!-- Downloading Data -->
-    <section id="download-data">
-        <h2>Downloading Data</h2>
-        <h3>CDS API setup</h3>
-        <pre><code><span class="c-gray"># Install and configure CDS API</span>
-pip install cdsapi
-
-<span class="c-gray"># Create ~/.cdsapirc</span>
-url: https://cds.climate.copernicus.eu/api
-key: YOUR_UID:YOUR_API_KEY</code></pre>
-
-        <h3>ERA5 (surface + pressure levels)</h3>
-        <pre><code>python scripts/download_era5.py \
-    --year 2023 --month 6 --day 1 \
-    --lat_n 55 --lat_s 15 --lon_w 70 --lon_e 145 \
-    --out_dir ./data/era5/</code></pre>
-
-        <h3>CAMS EAC4</h3>
-        <pre><code>python scripts/download_cams.py \
-    --date 2023-06-01 \
-    --area 55 70 15 145 \
-    --out_dir ./data/cams/</code></pre>
-
-        <div class="callout callout-tip">
-            <span class="callout-icon">💡</span>
-            <span>The <a href="https://ammarkheder-aria.hf.space" target="_blank">demo app</a>
-            can generate a complete download script — use the <strong>Download Code</strong> tab.</span>
-        </div>
-    </section>
-
-    <!-- Data Format -->
-    <section id="data-format">
-        <h2>Data Format</h2>
-        <p>ARIA stores training data as <strong>zarr arrays</strong> (format v2) on a shared filesystem.</p>
-        <table>
-            <thead><tr><th>Dataset</th><th>Path</th><th>Shape (per year)</th><th>Chunks</th></tr></thead>
-            <tbody>
-                <tr><td>ERA5 global</td><td><code>era5_global_daily/{year}.zarr</code></td><td>(365, 30, 721, 1440)</td><td>(1, 30, 721, 1440)</td></tr>
-                <tr><td>GHAP global</td><td><code>ghap_global_daily/{year}.zarr</code></td><td>(365, 18000, 36000)</td><td>(1, 512, 512)</td></tr>
-                <tr><td>CAMS global</td><td><code>cams_global_daily/{year}.zarr</code></td><td>group of 6 arrays</td><td>(1, H, W)</td></tr>
-                <tr><td>Elevation</td><td><code>elevation/gmted2010_global.zarr</code></td><td>(67200, 172800)</td><td>(512, 512)</td></tr>
-                <tr><td>Emission proxies</td><td><code>emission_proxies_global.zarr</code></td><td>group: (18000, 36000) × 3</td><td>(512, 512)</td></tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- Architecture -->
-    <section id="architecture">
-        <h2>Architecture</h2>
-        <pre><code><span class="c-blue">ERA5 (72ch, 168×280)</span>  →  <span class="c-green">Global ViT</span>  (depth=8, dim=768, heads=12)
-                              patch_size=8  →  735 tokens
-                                                    ↕ <span class="c-yellow">Cross-Attention</span> × 2
-<span class="c-blue">Local (18ch, 512×512)</span> →  <span class="c-green">Local ViT</span>   (depth=6, dim=512, heads=8)
-                              patch_size=16 →  1024 tokens + skip
-                                                    ↓
-                                           <span class="c-yellow">CNN Decoder</span>
-                                           32→64→128→256→512px
-                                                    ↓
-                                    <span class="c-red">PM₂.₅ delta @ 1km</span></code></pre>
-
-        <h3>Delta prediction</h3>
-        <p>The model predicts a residual on top of CAMS:</p>
-        <pre><code>pred_pm25 = cams_pm25_interpolated + model(era5, local_input)</code></pre>
-        <p>
-            The final conv layer is zero-initialized, so the model starts at the CAMS baseline
-            and learns to correct it. This avoids training instability and gives physically
-            meaningful predictions from epoch 0.
-        </p>
-    </section>
-
-    <!-- Inference -->
-    <section id="inference">
-        <h2>Inference</h2>
-        <pre><code><span class="c-blue">import</span> torch
-<span class="c-blue">import</span> numpy <span class="c-blue">as</span> np
-<span class="c-blue">from</span> cranpm.training.trainer <span class="c-blue">import</span> CranPMLightning
-
-<span class="c-gray"># Load model</span>
-model = CranPMLightning.load_from_checkpoint(<span class="c-str">"aria_global.ckpt"</span>)
-model.eval().cuda()
-
-<span class="c-gray"># Prepare inputs (example shapes)</span>
-era5  = torch.randn(1, 72, 168, 280).cuda().bfloat16()   <span class="c-gray"># global branch</span>
-local = torch.randn(1, 18, 512, 512).cuda().bfloat16()   <span class="c-gray"># local branch</span>
-
-<span class="c-blue">with</span> torch.no_grad():
-    delta = model.model(era5, local)                      <span class="c-gray"># (1, 1, 512, 512)</span>
-    pred  = cams_bilinear + delta.float().cpu().numpy()   <span class="c-gray"># µg/m³</span></code></pre>
-
-        <div class="callout callout-warn">
-            <span class="callout-icon">⚠️</span>
-            <span>Cast bf16 tensors to float32 before <code>.numpy()</code> —
-            bf16 is not supported by NumPy.</span>
-        </div>
-    </section>
-
-    <!-- Config -->
-    <section id="config">
-        <h2>Configuration</h2>
-        <p>All training and model parameters live in <code>configs/global_pretrain.yaml</code>:</p>
-        <pre><code>model:
-  era5_channels: <span class="c-yellow">72</span>          <span class="c-gray"># 30+6 ERA5/CAMS at t, 30+6 at t-1</span>
-  global_img_size: [<span class="c-yellow">168</span>, <span class="c-yellow">280</span>]
-  global_patch_size: <span class="c-yellow">8</span>
-  global_embed_dim: <span class="c-yellow">768</span>
-  global_depth: <span class="c-yellow">8</span>
-  local_channels: <span class="c-yellow">18</span>         <span class="c-gray"># CAMS×12 + elev + roads + lights + pop + lat + lon</span>
-  local_img_size: [<span class="c-yellow">512</span>, <span class="c-yellow">512</span>]
-  local_patch_size: <span class="c-yellow">16</span>
-  local_embed_dim: <span class="c-yellow">512</span>
-  local_depth: <span class="c-yellow">6</span>
-  cross_layers: <span class="c-yellow">2</span>
-
-data:
-  ghap_mean: <span class="c-yellow">12.0</span>            <span class="c-gray"># normalization: (raw - mean) / std</span>
-  ghap_std:  <span class="c-yellow">18.0</span>
-
-train:
-  batch_size: <span class="c-yellow">2</span>              <span class="c-gray"># per GPU</span>
-  learning_rate: <span class="c-yellow">5.0e-5</span>
-  epochs: <span class="c-yellow">300</span>
-  precision: <span class="c-str">"bf16-mixed"</span>
-  alpha_grad: <span class="c-yellow">0.0</span>           <span class="c-gray"># gradient loss disabled (conflicts with delta prediction)</span></code></pre>
-    </section>
-
-    <!-- Training -->
-    <section id="training">
-        <h2>Training</h2>
-        <pre><code><span class="c-gray"># Single GPU (debug)</span>
-python train_global.py --config configs/global_pretrain.yaml
-
-<span class="c-gray"># Multi-GPU DDP (4 GPUs, 1 node)</span>
-torchrun --nproc_per_node=4 train_global.py \
-    --config configs/global_pretrain.yaml
-
-<span class="c-gray"># Resume from checkpoint</span>
-python train_global.py \
-    --config configs/global_pretrain.yaml \
-    --resume checkpoints_global/last.ckpt</code></pre>
-    </section>
-
-    <!-- SLURM -->
-    <section id="slurm">
-        <h2>SLURM / HPC</h2>
-        <pre><code>sbatch scripts/submit_train_global.sh</code></pre>
-
-        <h3>Key environment variables</h3>
-        <table>
-            <thead><tr><th>Variable</th><th>Value</th><th>Purpose</th></tr></thead>
-            <tbody>
-                <tr><td><code>NCCL_SOCKET_IFNAME</code></td><td><code>hsn0,hsn1,hsn2,hsn3</code></td><td>LUMI high-speed network</td></tr>
-                <tr><td><code>MIOPEN_USER_DB_PATH</code></td><td><code>/tmp/miopen_$JOBID</code></td><td>Per-node MIOpen cache</td></tr>
-                <tr><td><code>MASTER_ADDR</code></td><td>head node hostname</td><td>DDP rendezvous</td></tr>
-                <tr><td><code>MASTER_PORT</code></td><td><code>29500</code></td><td>DDP port</td></tr>
-            </tbody>
-        </table>
-
-        <div class="callout callout-warn">
-            <span class="callout-icon">⚠️</span>
-            <span>On LUMI, run <code>srun --ntasks-per-node=1 mkdir -p $MIOPEN_USER_DB_PATH</code>
-            before training to create MIOpen cache dirs on <em>all</em> nodes, not just the head node.</span>
-        </div>
-    </section>
-
-    <!-- Checkpoints -->
-    <section id="checkpoints">
-        <h2>Checkpoints</h2>
-        <table>
-            <thead><tr><th>Name</th><th>Description</th><th>Status</th></tr></thead>
-            <tbody>
-                <tr><td><code>aria_global.ckpt</code></td><td>Full global model, ERA5+CAMS+proxies</td><td>🔄 Training</td></tr>
-            </tbody>
-        </table>
-        <pre><code><span class="c-blue">from</span> huggingface_hub <span class="c-blue">import</span> hf_hub_download
-
-path = hf_hub_download(
-    repo_id=<span class="c-str">"AmmarKheder/ARIA-global"</span>,
-    filename=<span class="c-str">"aria_global.ckpt"</span>
-)</code></pre>
-    </section>
-
-    <!-- API -->
-    <section id="api">
-        <h2>Python API</h2>
-        <h3><code>CranPMLightning</code></h3>
-        <table>
-            <thead><tr><th>Method</th><th>Description</th></tr></thead>
-            <tbody>
-                <tr><td><code>load_from_checkpoint(path)</code></td><td>Load model from <code>.ckpt</code> file</td></tr>
-                <tr><td><code>model(era5, local)</code></td><td>Forward pass → PM₂.₅ delta (B,1,512,512)</td></tr>
-                <tr><td><code>predict_step(batch, idx)</code></td><td>Lightning predict loop step</td></tr>
-            </tbody>
-        </table>
-
-        <h3><code>GlobalARIADataModule</code></h3>
-        <table>
-            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-                <tr><td><code>era5_dir</code></td><td>str</td><td>Path to ERA5 zarr directory</td></tr>
-                <tr><td><code>ghap_dir</code></td><td>str</td><td>Path to GHAP zarr directory</td></tr>
-                <tr><td><code>cams_dir</code></td><td>str</td><td>Path to CAMS zarr directory</td></tr>
-                <tr><td><code>emission_proxies_path</code></td><td>str</td><td>Path to emission proxies zarr</td></tr>
-                <tr><td><code>train_years</code></td><td>list[int]</td><td>Years used for training</td></tr>
-                <tr><td><code>patch_size</code></td><td>int</td><td>Local tile size (default: 512)</td></tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq">
-        <h2>FAQ</h2>
-
-        <h3>What inputs do I need at inference?</h3>
-        <p>ERA5 (surface + pressure levels) and CAMS for the target date and the previous day.
-        Static layers (elevation, road density, nighttime lights, population) are precomputed once.</p>
-
-        <h3>Can I run ARIA on CPU?</h3>
-        <p>Yes, but it is slow. For production use, a GPU with at least 16GB VRAM is recommended.
-        The model runs in bf16 by default — use <code>model.float()</code> if your GPU does not support bf16.</p>
-
-        <h3>How large are the zarr training files?</h3>
-        <p>GHAP global: ~2TB total (5 years). ERA5 global: ~500GB. CAMS: ~200GB.
-        A smaller regional subset is sufficient for fine-tuning.</p>
-
-        <h3>Can I fine-tune on a specific region?</h3>
-        <p>Yes — pass a regional crop in the config and adjust <code>ghap_h</code>/<code>ghap_w</code>
-        accordingly. The architecture is resolution-agnostic.</p>
-    </section>
-
-</main>
-</div>
 </body>
 </html>

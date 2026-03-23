@@ -19,3 +19,9 @@ checkpoints_global/
 .ipynb_checkpoints/
 .vscode/
 tmp/
+miopen_cache*/
+data/
+*.png
+*.jpg
+*.gif
+*.pdf

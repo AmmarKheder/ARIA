@@ -23,16 +23,17 @@ model:
 
 data:
   mode: global
-  era5_dir: /scratch/project_462001140/ammar/eccv/data/zarr/era5_global_daily
-  ghap_dir: /scratch/project_462001140/ammar/eccv/data/zarr/ghap_global_daily
-  elev_coarse_path: /scratch/project_462001140/ammar/eccv/data/zarr/elevation/elevation_global_025deg.zarr
-  elev_hires_path: /scratch/project_462001140/ammar/eccv/data/zarr/elevation/gmted2010_global.zarr
-  cams_dir: /scratch/project_462001140/ammar/eccv/data/zarr/cams_global_daily
-  emission_proxies_path: /scratch/project_462001140/ammar/eccv/data/zarr/emission_proxies_global.zarr
-  train_years: [2018, 2019, 2020]
-  val_years: [2021]
+  era5_dir: /scratch/project_462001140/ammar/eccv/aria/data/era5
+  ghap_dir: /scratch/project_462001140/ammar/eccv/aria/data/ghap
+  elev_coarse_path: /scratch/project_462001140/ammar/eccv/aria/data/elevation/elevation_global_025deg.zarr
+  elev_hires_path: /scratch/project_462001140/ammar/eccv/aria/data/elevation/gmted2010_global.zarr
+  cams_dir: /scratch/project_462001140/ammar/eccv/aria/data/cams
+  emission_proxies_path: /scratch/project_462001140/ammar/eccv/aria/data/emission_proxies.zarr
+  # GHAP data: 2018-2022 (2017 will be added once disk space freed)
+  train_years: [2018, 2019, 2020, 2021, 2022]
+  val_years: [2022]
   test_years: [2022]
-  horizons: [1, 2, 3, 4]
+  horizons: [0, 1]   # J+0 = same-day downscaling, J+1 = 24h forecast
   patch_size: 512
   normalize: true
   num_workers: 4
@@ -47,27 +48,32 @@ data:
   # Era5 global shape
   era5_h: 721
   era5_w: 1440
-  # Normalization
-  ghap_mean: 12.0
-  ghap_std: 18.0
+  # Log-space normalization stats (log1p(PM2.5) normalized)
+  # ghap_to_lognorm(x) = (log1p(x) - 2.416) / 0.800
+  # land_threshold = -2.416/0.800 = -3.02 → PM2.5 > 0 correctly
+  ghap_mean: 2.416
+  ghap_std: 0.800
+  ghap_log_transform: true  # use expm1 inverse in RMSE computation
   augment: true
-  hotspot_ratio: 0.5
-  hotspot_power: 1.0
+  hotspot_ratio: 0.7   # 70% of patches sampled from high-pollution areas
+  hotspot_power: 1.5   # stronger bias toward extreme events
+  patches_per_day: 32  # random patches per (day, horizon) → 6×365×32 ≈ 70,080 samples/epoch
 
 train:
   batch_size: 2
   val_batch_size: 2
   learning_rate: 5.0e-5
-  warmup_epochs: 0
+  warmup_epochs: 5
   weight_decay: 0.05
   min_lr: 1.0e-6
   epochs: 300
+  # Loss weights
   alpha_mse: 1.0
   alpha_ssim: 0.0
   alpha_grad: 0.0
-  alpha_spectral: 0.1
-  alpha_station: 0.0
-  underestimate_penalty: 1.0
+  alpha_spectral: 0.1       # Focal Frequency Loss — penalizes spatial errors
+  underestimate_penalty: 1.5  # penalise under-prediction (health risk asymmetry)
+  ffl_alpha: 1.0
   gradient_clip_val: 1.0
   early_stopping_patience: 100
   precision: "bf16-mixed"
